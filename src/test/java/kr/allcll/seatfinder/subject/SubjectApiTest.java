@@ -25,15 +25,6 @@ class SubjectApiTest {
     @Autowired
     private MockMvc mockMvc;
 
-    /*
-        @PostMapping("/api/subject/upload")
-    public ResponseEntity<String> uploadSubjects(@RequestParam MultipartFile file) throws IOException {
-        SubjectsParsingResponse parsedSubjects = subjectSheetParser.parse(file);
-        SubjectsRequest subjectsRequest = SubjectsRequest.toSubjectsRequest(parsedSubjects);
-        subjectApp.save(subjectsRequest);
-        return ResponseEntity.ok("업로드에 성공했습니다.");
-    }
-     */
     @MockitoBean
     private SubjectSheetParser subjectSheetParser;
 
