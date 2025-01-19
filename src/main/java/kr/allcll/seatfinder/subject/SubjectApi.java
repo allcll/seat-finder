@@ -20,7 +20,7 @@ public class SubjectApi {
     @PostMapping("/api/subject/upload")
     public ResponseEntity<String> uploadSubjects(@RequestParam MultipartFile file) throws IOException {
         SubjectsParsingResponse parsedSubjects = subjectSheetParser.parse(file);
-        SubjectsRequest subjectsRequest = SubjectsRequest.toSubjectsRequest(parsedSubjects);
+        SubjectsRequest subjectsRequest = SubjectsRequest.from(parsedSubjects);
         subjectApp.save(subjectsRequest);
         return ResponseEntity.ok("업로드에 성공했습니다.");
     }
