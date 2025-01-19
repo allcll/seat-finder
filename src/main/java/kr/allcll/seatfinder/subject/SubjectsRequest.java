@@ -6,7 +6,7 @@ import kr.allcll.seatfinder.excel.SubjectsParsingResponse;
 
 public record SubjectsRequest(List<SubjectRequest> subjectRequests) {
 
-    public static SubjectsRequest toSubjectsRequest(SubjectsParsingResponse subjectsParsingResponse) {
+    public static SubjectsRequest from(SubjectsParsingResponse subjectsParsingResponse) {
         List<ExcelSubject> subjectsRequest = subjectsParsingResponse.excelSubjects();
         return new SubjectsRequest(subjectsRequest.stream()
             .map(SubjectRequest::from)
