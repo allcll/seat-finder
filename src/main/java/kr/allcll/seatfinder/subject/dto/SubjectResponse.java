@@ -3,7 +3,7 @@ package kr.allcll.seatfinder.subject.dto;
 import kr.allcll.seatfinder.subject.Subject;
 
 public record SubjectResponse(
-//    Long subjectId,
+    Long subjectId,
     String offeringUniversity,
     String offeringDepartment,
     String subjectCode,
@@ -31,6 +31,7 @@ public record SubjectResponse(
 
     public static SubjectResponse from(Subject subject) {
         return new SubjectResponse(
+            subject.getId(),
             subject.getOfferingUniversity(),
             subject.getOfferingDepartment(),
             subject.getSubjectCode(),
