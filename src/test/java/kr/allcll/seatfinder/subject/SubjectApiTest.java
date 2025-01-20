@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import kr.allcll.seatfinder.excel.SubjectSheetParser;
 import kr.allcll.seatfinder.excel.SubjectsParsingResponse;
+import kr.allcll.seatfinder.subject.dto.SubjectsRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

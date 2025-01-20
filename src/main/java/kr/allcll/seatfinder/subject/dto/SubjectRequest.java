@@ -1,6 +1,7 @@
-package kr.allcll.seatfinder.subject;
+package kr.allcll.seatfinder.subject.dto;
 
 import kr.allcll.seatfinder.excel.ExcelSubject;
+import kr.allcll.seatfinder.subject.Subject;
 
 public record SubjectRequest(
     String offeringUniversity,

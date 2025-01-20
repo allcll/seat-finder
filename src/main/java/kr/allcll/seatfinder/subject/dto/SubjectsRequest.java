@@ -1,8 +1,9 @@
-package kr.allcll.seatfinder.subject;
+package kr.allcll.seatfinder.subject.dto;
 
 import java.util.List;
 import kr.allcll.seatfinder.excel.ExcelSubject;
 import kr.allcll.seatfinder.excel.SubjectsParsingResponse;
+import kr.allcll.seatfinder.subject.Subject;
 
 public record SubjectsRequest(
     List<SubjectRequest> subjectRequests
