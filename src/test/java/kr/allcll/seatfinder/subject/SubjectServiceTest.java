@@ -1,8 +1,10 @@
 package kr.allcll.seatfinder.subject;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
+import kr.allcll.seatfinder.subject.dto.SubjectResponse;
 import kr.allcll.seatfinder.subject.dto.SubjectsResponse;
 import kr.allcll.seatfinder.support.fixture.SubjectFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,15 +48,17 @@ class SubjectServiceTest {
     void findSubjectByQueryTest() {
         SubjectsResponse subjectsResponse = subjectService.findSubjectsByCondition(null, "컴퓨터구조", null, null, null);
 
-        assertThat(subjectsResponse.subjectResponses()).hasSize(2);
-        assertThat(subjectsResponse.subjectResponses().get(0).subjectName()).isEqualTo("컴퓨터구조");
-        assertThat(subjectsResponse.subjectResponses().get(0).subjectCode()).isEqualTo("003278");
-        assertThat(subjectsResponse.subjectResponses().get(0).classCode()).isEqualTo("001");
-        assertThat(subjectsResponse.subjectResponses().get(0).professorName()).isEqualTo("유재석");
-        assertThat(subjectsResponse.subjectResponses().get(1).subjectName()).isEqualTo("컴퓨터구조");
-        assertThat(subjectsResponse.subjectResponses().get(1).subjectCode()).isEqualTo("003278");
-        assertThat(subjectsResponse.subjectResponses().get(1).classCode()).isEqualTo("002");
-        assertThat(subjectsResponse.subjectResponses().get(1).professorName()).isEqualTo("정형돈");
+        assertThat(subjectsResponse.subjectResponses()).hasSize(2)
+            .extracting(
+                SubjectResponse::subjectName,
+                SubjectResponse::subjectCode,
+                SubjectResponse::classCode,
+                SubjectResponse::professorName
+            )
+            .containsExactly(
+                tuple("컴퓨터구조", "003278", "001", "유재석"),
+                tuple("컴퓨터구조", "003278", "002", "정형돈")
+            );
     }
 
     @DisplayName("학수번호, 분반, 교수명으로 과목을 조회한다.")
@@ -62,11 +66,16 @@ class SubjectServiceTest {
     void findSubjectByQueryTest2() {
         SubjectsResponse subjectsResponse = subjectService.findSubjectsByCondition(null, null, "003279", "001", "노홍철");
 
-        assertThat(subjectsResponse.subjectResponses()).hasSize(1);
-        assertThat(subjectsResponse.subjectResponses().get(0).subjectName()).isEqualTo("운영체제");
-        assertThat(subjectsResponse.subjectResponses().get(0).subjectCode()).isEqualTo("003279");
-        assertThat(subjectsResponse.subjectResponses().get(0).classCode()).isEqualTo("001");
-        assertThat(subjectsResponse.subjectResponses().get(0).professorName()).isEqualTo("노홍철");
+        assertThat(subjectsResponse.subjectResponses()).hasSize(1)
+            .extracting(
+                SubjectResponse::subjectName,
+                SubjectResponse::subjectCode,
+                SubjectResponse::classCode,
+                SubjectResponse::professorName
+            )
+            .containsExactly(
+                tuple("운영체제", "003279", "001", "노홍철")
+            );
     }
 
     @DisplayName("존재하지 않는 조건으로 과목을 조회한다.")
