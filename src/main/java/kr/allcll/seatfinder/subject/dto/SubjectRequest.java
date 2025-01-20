@@ -1,12 +1,13 @@
-package kr.allcll.seatfinder.subject;
+package kr.allcll.seatfinder.subject.dto;
 
 import kr.allcll.seatfinder.excel.ExcelSubject;
+import kr.allcll.seatfinder.subject.Subject;
 
 public record SubjectRequest(
     String offeringUniversity,
     String offeringDepartment,
-    String subjectNumber,
-    String classDivision,
+    String subjectCode,
+    String classCode,
     String subjectName,
     String subjectType,
     String electiveArea,
@@ -18,7 +19,7 @@ public record SubjectRequest(
     String exchangeEligible,
     String schedule,
     String lectureRoom,
-    String mainProfessor,
+    String professorName,
     String supervisingDepartment,
     String notesAndRestrictions,
     String classCategory,
@@ -61,8 +62,8 @@ public record SubjectRequest(
             null,
             offeringUniversity,
             offeringDepartment,
-            subjectNumber,
-            classDivision,
+            subjectCode,
+            classCode,
             subjectName,
             subjectType,
             electiveArea,
@@ -74,7 +75,7 @@ public record SubjectRequest(
             exchangeEligible,
             schedule,
             lectureRoom,
-            mainProfessor,
+            professorName,
             supervisingDepartment,
             notesAndRestrictions,
             classCategory,
