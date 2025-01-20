@@ -29,7 +29,7 @@ class SubjectApiTest {
     private SubjectSheetParser subjectSheetParser;
 
     @MockitoBean
-    private SubjectApp subjectApp;
+    private SubjectService subjectService;
 
     @DisplayName("과목 엑셀 파일을 업로드한다.")
     @Test
@@ -48,6 +48,6 @@ class SubjectApiTest {
             .andExpect(content().string("업로드에 성공했습니다."));
 
         then(subjectSheetParser).should().parse(any(MultipartFile.class));
-        then(subjectApp).should().save(any(SubjectsRequest.class));
+        then(subjectService).should().save(any(SubjectsRequest.class));
     }
 }

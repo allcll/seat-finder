@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class SubjectApp {
+public class SubjectService {
 
     private final SubjectRepository subjectRepository;
 

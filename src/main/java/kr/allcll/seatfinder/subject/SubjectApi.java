@@ -14,14 +14,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class SubjectApi {
 
-    private final SubjectApp subjectApp;
+    private final SubjectService subjectService;
     private final SubjectSheetParser subjectSheetParser;
 
     @PostMapping("/api/subject/upload")
     public ResponseEntity<String> uploadSubjects(@RequestParam MultipartFile file) throws IOException {
         SubjectsParsingResponse parsedSubjects = subjectSheetParser.parse(file);
         SubjectsRequest subjectsRequest = SubjectsRequest.from(parsedSubjects);
-        subjectApp.save(subjectsRequest);
+        subjectService.save(subjectsRequest);
         return ResponseEntity.ok("업로드에 성공했습니다.");
     }
 }
