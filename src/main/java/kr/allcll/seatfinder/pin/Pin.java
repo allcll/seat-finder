@@ -20,8 +20,8 @@ public class Pin extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "session_id")
-    private String sessionId;
+    @Column(name = "token_id")
+    private String tokenId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subject_id", nullable = false)
