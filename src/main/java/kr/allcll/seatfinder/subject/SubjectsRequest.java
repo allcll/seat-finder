@@ -4,7 +4,9 @@ import java.util.List;
 import kr.allcll.seatfinder.excel.ExcelSubject;
 import kr.allcll.seatfinder.excel.SubjectsParsingResponse;
 
-public record SubjectsRequest(List<SubjectRequest> subjectRequests) {
+public record SubjectsRequest(
+    List<SubjectRequest> subjectRequests
+) {
 
     public static SubjectsRequest from(SubjectsParsingResponse subjectsParsingResponse) {
         List<ExcelSubject> subjectsRequest = subjectsParsingResponse.excelSubjects();
