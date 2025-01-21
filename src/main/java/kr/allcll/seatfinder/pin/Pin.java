@@ -11,9 +11,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kr.allcll.seatfinder.AuditEntity;
 import kr.allcll.seatfinder.subject.Subject;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "PIN")
+@NoArgsConstructor
 public class Pin extends AuditEntity {
 
     @Id
@@ -26,4 +28,9 @@ public class Pin extends AuditEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
+
+    public Pin(String tokenId, Subject subject) {
+        this.tokenId = tokenId;
+        this.subject = subject;
+    }
 }
