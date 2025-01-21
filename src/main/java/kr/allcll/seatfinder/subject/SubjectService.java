@@ -1,6 +1,7 @@
 package kr.allcll.seatfinder.subject;
 
 import java.util.List;
+import kr.allcll.seatfinder.subject.dto.SubjectsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

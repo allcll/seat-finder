@@ -3,6 +3,7 @@ package kr.allcll.seatfinder.subject;
 import java.io.IOException;
 import kr.allcll.seatfinder.excel.SubjectSheetParser;
 import kr.allcll.seatfinder.excel.SubjectsParsingResponse;
+import kr.allcll.seatfinder.subject.dto.SubjectsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
