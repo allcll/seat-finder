@@ -14,15 +14,18 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        Cookie newCookie = generateCookie(request);
+        response.addCookie(newCookie);
+        return true;
+    }
+
+    private Cookie generateCookie(HttpServletRequest request) {
         if (request.getCookies() == null) {
-            response.addCookie(new Cookie(TOKEN_KEY, TokenProvider.createToken()));
-            return true;
+            return new Cookie(TOKEN_KEY, TokenProvider.createToken());
         }
-        Cookie newCookie = Arrays.stream(request.getCookies())
+        return Arrays.stream(request.getCookies())
             .filter(cookie -> cookie.getName().equals(TOKEN_KEY))
             .findAny()
             .orElse(new Cookie(TOKEN_KEY, TokenProvider.createToken()));
-        response.addCookie(newCookie);
-        return true;
     }
 }

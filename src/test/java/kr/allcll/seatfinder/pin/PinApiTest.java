@@ -26,14 +26,10 @@ class PinApiTest {
 
     @Test
     @DisplayName("쿠키에 토큰이 존재하지 않을 때 토큰의 생성을 확인한다.")
-    void pinSubject() throws Exception {
+    void addPinOnSubject() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(post("/api/pin?subjectId=1"))
             .andReturn()
             .getResponse();
         assertThat(response.getCookie(TOKEN_KEY)).isNotNull();
-    }
-
-    void mockPinService() {
-        doNothing().when(pinService).addPinAtSubject(any(), any());
     }
 }

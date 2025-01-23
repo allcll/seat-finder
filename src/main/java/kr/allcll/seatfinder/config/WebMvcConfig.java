@@ -16,7 +16,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        log.info("인터셉터 동작");
         registry.addInterceptor(authInterceptor)
             .excludePathPatterns("/api/pin/**", "/api/subject/upload");
     }
