@@ -31,10 +31,5 @@ public class PinApi {
             return new Cookie(TOKEN_KEY, TokenProvider.createToken());
         }
         return cookie;
-//
-//        return Arrays.stream(cookie)
-//            .filter(eachCookie -> eachCookie.getName().equals(TOKEN_KEY))
-//            .findAny()
-//            .orElse(new Cookie(TOKEN_KEY, TokenProvider.createToken()));
     }
 }
