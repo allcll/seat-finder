@@ -12,6 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class TimeEntity {
 
     @CreatedDate
-    @Column(name = "created_date", nullable = false)
-    private LocalDateTime createdDate;
+    @Column(name = "create_at", nullable = false)
+    private LocalDateTime createAt;
 }
