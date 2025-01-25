@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import kr.allcll.seatfinder.AuditEntity;
+import kr.allcll.seatfinder.TimeEntity;
 import kr.allcll.seatfinder.subject.Subject;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "PIN")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Pin extends AuditEntity {
+public class Pin extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
