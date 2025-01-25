@@ -1,12 +1,12 @@
 package kr.allcll.seatfinder.pin;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,7 +76,7 @@ class PinServiceTest {
     @DisplayName("핀이 5개 이상일 경우 예외를 검증한다.")
     @Transactional
     void canNotAddPinOnSubject() {
-        Assertions.assertThatThrownBy(() -> pinService.addPinOnSubject(6L, REACH_MAX_TOKEN))
+        assertThatThrownBy(() -> pinService.addPinOnSubject(6L, REACH_MAX_TOKEN))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -88,5 +88,17 @@ class PinServiceTest {
     ) {
         return new Subject(null, "", "", subjectCode, classCode, subjectName, "", "", "", "", "", "", "", "", "",
             "", professorName, "", "", "", "", "", "", "");
+    }
+
+    @Test
+    @DisplayName("이미 핀 등록된 과목일 경우 예외를 검증한다.")
+    @Transactional
+    void alreadyExistPinSubject() {
+        //given
+        pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN);
+
+        //then
+        assertThatThrownBy(() -> pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }
