@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
@@ -14,18 +15,35 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        Cookie newCookie = generateCookie(request);
-        response.addCookie(newCookie);
+        if (isNotExistToken(request)) {
+            ThreadLocalHolder.SHARED_TOKEN.set(TokenProvider.createToken());
+            return true;
+        }
+        ThreadLocalHolder.SHARED_TOKEN.set(findTokenAtCooke(request)); //쿠키에 토큰이 존재해야하는 경우
         return true;
     }
 
-    private Cookie generateCookie(HttpServletRequest request) {
-        if (request.getCookies() == null) {
-            return new Cookie(TOKEN_KEY, TokenProvider.createToken());
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+        ModelAndView modelAndView) {
+        if (isNotExistToken(request)) {
+            response.addCookie(new Cookie(TOKEN_KEY, ThreadLocalHolder.SHARED_TOKEN.get()));
         }
+    }
+
+    private boolean isNotExistToken(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return true;
+        }
+        return Arrays.stream(request.getCookies())
+            .noneMatch(cookie -> cookie.getName().equals(TOKEN_KEY));
+    }
+
+    private String findTokenAtCooke(HttpServletRequest request) {
         return Arrays.stream(request.getCookies())
             .filter(cookie -> cookie.getName().equals(TOKEN_KEY))
             .findAny()
-            .orElse(new Cookie(TOKEN_KEY, TokenProvider.createToken()));
+            .orElseThrow(() -> new IllegalArgumentException("쿠키에 토큰이 존재하지 않습니다."))
+            .getValue();
     }
 }
