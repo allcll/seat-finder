@@ -34,4 +34,13 @@ public class PinService {
             throw new IllegalArgumentException("이미 핀 등록된 과목 입니다.");
         }
     }
+
+    @Transactional
+    public void deletePinOnSubject(Long subjectId, String token) {
+        Subject subject = subjectRepository.findById(subjectId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 과목 입니다."));
+        Pin pin = pinRepository.findBySubjectAndToken(subject, token)
+            .orElseThrow(() -> new IllegalArgumentException("핀에 등록된 과목이 아닙니다."));
+        pinRepository.deleteById(pin.getId());
+    }
 }
