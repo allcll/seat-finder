@@ -19,7 +19,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             ThreadLocalHolder.SHARED_TOKEN.set(TokenProvider.createToken());
             return true;
         }
-        ThreadLocalHolder.SHARED_TOKEN.set(findTokenAtCooke(request)); //쿠키에 토큰이 존재해야하는 경우
+        ThreadLocalHolder.SHARED_TOKEN.set(findTokenAtCooke(request));
         return true;
     }
 
