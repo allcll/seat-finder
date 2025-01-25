@@ -82,7 +82,33 @@ class PinServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    void saveFivePinToMaxToken(List<Subject> subjects) {
+    @Test
+    @DisplayName("핀의 삭제를 검증한다.")
+    @Transactional
+    void deletePin() {
+        //given
+        saveFivePinToMaxToken(subjects);
+
+        //when
+        pinService.deletePinOnSubject(1L, REACH_MAX_TOKEN);
+
+        //then
+        assertThat(pinRepository.findAllByToken(REACH_MAX_TOKEN)).hasSize(4);
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 핀의 삭제에 대한 예외를 검증한다.")
+    @Transactional
+    void deleteNotExistPin() {
+        //given
+        saveFivePinToMaxToken(subjects);
+
+        //then
+        assertThatThrownBy(() -> pinService.deletePinOnSubject(6L, REACH_MAX_TOKEN))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private void saveFivePinToMaxToken(List<Subject> subjects) {
         pinRepository.saveAll(
             List.of(
                 new Pin(REACH_MAX_TOKEN, subjects.get(0)),
@@ -93,7 +119,7 @@ class PinServiceTest {
         );
     }
 
-    List<Subject> saveSixSubject() {
+    private List<Subject> saveSixSubject() {
         Subject subjectA = createSubject("컴퓨터구조", "003278", "001", "김보예");
         Subject subjectB = createSubject("운영체제", "003279", "001", "김수민");
         Subject subjectC = createSubject("자료구조", "003280", "001", "김봉케");
