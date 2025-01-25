@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class PinServiceTest {
 
+    private static final String NOT_REACH_MAX_TOKEN = "tokenIdNotReachMax";
+    private static final String REACH_MAX_TOKEN = "tokenIdReachMax";
+
     @Autowired
     private PinService pinService;
 
@@ -35,33 +38,9 @@ class PinServiceTest {
         pinRepository.deleteAllInBatch();
         subjectRepository.deleteAllInBatch();
         entityManager.createNativeQuery("ALTER TABLE subject ALTER COLUMN id RESTART WITH 1").executeUpdate();
-        Subject subjectA = createSubject("컴퓨터구조", "003278", "001", "김보예");
-        Subject subjectB = createSubject("운영체제", "003279", "001", "김수민");
-        Subject subjectC = createSubject("자료구조", "003280", "001", "김봉케");
-        Subject subjectD = createSubject("알고리즘", "003281", "001", "오현지");
-        Subject subjectE = createSubject("컴퓨터구조", "003278", "002", "전유채");
-        Subject subjectF = createSubject("컴퓨터구조", "003278", "003", "김주환");
-        subjectRepository.saveAll(
-            List.of(
-                subjectA,
-                subjectB,
-                subjectC,
-                subjectD,
-                subjectE,
-                subjectF)
-        );
-        pinRepository.saveAll(
-            List.of(
-                new Pin(REACH_MAX_TOKEN, subjectA),
-                new Pin(REACH_MAX_TOKEN, subjectB),
-                new Pin(REACH_MAX_TOKEN, subjectC),
-                new Pin(REACH_MAX_TOKEN, subjectD),
-                new Pin(REACH_MAX_TOKEN, subjectE))
-        );
+        List<Subject> subjects = saveSixSubject();
+        saveFivePinToMaxToken(subjects);
     }
-
-    private static final String NOT_REACH_MAX_TOKEN = "tokenIdNotReachMax";
-    private static final String REACH_MAX_TOKEN = "tokenIdReachMax";
 
     @Test
     @DisplayName("핀이 5개 미만일 경우 정상 등록을 검증한다.")
@@ -100,5 +79,34 @@ class PinServiceTest {
         //then
         assertThatThrownBy(() -> pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN))
             .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    void saveFivePinToMaxToken(List<Subject> subjects) {
+        pinRepository.saveAll(
+            List.of(
+                new Pin(REACH_MAX_TOKEN, subjects.get(0)),
+                new Pin(REACH_MAX_TOKEN, subjects.get(1)),
+                new Pin(REACH_MAX_TOKEN, subjects.get(2)),
+                new Pin(REACH_MAX_TOKEN, subjects.get(3)),
+                new Pin(REACH_MAX_TOKEN, subjects.get(4)))
+        );
+    }
+
+    List<Subject> saveSixSubject() {
+        Subject subjectA = createSubject("컴퓨터구조", "003278", "001", "김보예");
+        Subject subjectB = createSubject("운영체제", "003279", "001", "김수민");
+        Subject subjectC = createSubject("자료구조", "003280", "001", "김봉케");
+        Subject subjectD = createSubject("알고리즘", "003281", "001", "오현지");
+        Subject subjectE = createSubject("컴퓨터구조", "003278", "002", "전유채");
+        Subject subjectF = createSubject("컴퓨터구조", "003278", "003", "김주환");
+        return subjectRepository.saveAll(
+            List.of(
+                subjectA,
+                subjectB,
+                subjectC,
+                subjectD,
+                subjectE,
+                subjectF)
+        );
     }
 }
