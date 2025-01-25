@@ -33,21 +33,27 @@ class PinServiceTest {
     @Autowired
     private EntityManager entityManager;
 
+    private List<Subject> subjects;
+
     @BeforeEach
     void setUp() {
         pinRepository.deleteAllInBatch();
         subjectRepository.deleteAllInBatch();
         entityManager.createNativeQuery("ALTER TABLE subject ALTER COLUMN id RESTART WITH 1").executeUpdate();
-        List<Subject> subjects = saveSixSubject();
-        saveFivePinToMaxToken(subjects);
+        subjects = saveSixSubject();
     }
 
     @Test
     @DisplayName("핀이 5개 미만일 경우 정상 등록을 검증한다.")
     @Transactional
     void addPinOnSubject() {
+        //given
         pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN);
+
+        //when
         List<Pin> result = pinRepository.findAllByToken(NOT_REACH_MAX_TOKEN);
+
+        //then
         assertThat(result).hasSize(1);
     }
 
@@ -55,19 +61,14 @@ class PinServiceTest {
     @DisplayName("핀이 5개 이상일 경우 예외를 검증한다.")
     @Transactional
     void canNotAddPinOnSubject() {
+        //given
+        saveFivePinToMaxToken(subjects);
+
+        //then
         assertThatThrownBy(() -> pinService.addPinOnSubject(6L, REACH_MAX_TOKEN))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    private Subject createSubject(
-        String subjectName,
-        String subjectCode,
-        String classCode,
-        String professorName
-    ) {
-        return new Subject(null, "", "", subjectCode, classCode, subjectName, "", "", "", "", "", "", "", "", "",
-            "", professorName, "", "", "", "", "", "", "");
-    }
 
     @Test
     @DisplayName("이미 핀 등록된 과목일 경우 예외를 검증한다.")
@@ -108,5 +109,15 @@ class PinServiceTest {
                 subjectE,
                 subjectF)
         );
+    }
+
+    private Subject createSubject(
+        String subjectName,
+        String subjectCode,
+        String classCode,
+        String professorName
+    ) {
+        return new Subject(null, "", "", subjectCode, classCode, subjectName, "", "", "", "", "", "", "", "", "",
+            "", professorName, "", "", "", "", "", "", "");
     }
 }
