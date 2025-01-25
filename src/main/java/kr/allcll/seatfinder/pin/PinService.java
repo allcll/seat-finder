@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PinService {
 
+    private static final int MAX_PIN_NUMBER = 5;
+
     private final PinRepository pinRepository;
     private final SubjectRepository subjectRepository;
-
-    private static final int MAX_PIN_NUMBER = 5;
 
     @Transactional
     public void addPinOnSubject(Long subjectId, String token) {

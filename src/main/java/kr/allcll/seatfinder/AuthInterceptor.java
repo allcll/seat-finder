@@ -15,33 +15,33 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (isNotExistToken(request)) {
-            ThreadLocalHolder.SHARED_TOKEN.set(TokenProvider.createToken());
+        if (hasNoToken(request)) {
+            ThreadLocalHolder.SHARED_TOKEN.set(TokenProvider.create());
             return true;
         }
-        ThreadLocalHolder.SHARED_TOKEN.set(findTokenAtCooke(request));
+        ThreadLocalHolder.SHARED_TOKEN.set(findTokenFromCookie(request));
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
         ModelAndView modelAndView) {
-        if (isNotExistToken(request)) {
+        if (hasNoToken(request)) {
             response.addCookie(new Cookie(TOKEN_KEY, ThreadLocalHolder.SHARED_TOKEN.get()));
         }
     }
 
-    private boolean isNotExistToken(HttpServletRequest request) {
+    private boolean hasNoToken(HttpServletRequest request) {
         if (request.getCookies() == null) {
             return true;
         }
         return Arrays.stream(request.getCookies())
-            .noneMatch(cookie -> cookie.getName().equals(TOKEN_KEY));
+            .noneMatch(cookie -> TOKEN_KEY.equals(cookie.getName()));
     }
 
-    private String findTokenAtCooke(HttpServletRequest request) {
+    private String findTokenFromCookie(HttpServletRequest request) {
         return Arrays.stream(request.getCookies())
-            .filter(cookie -> cookie.getName().equals(TOKEN_KEY))
+            .filter(cookie -> TOKEN_KEY.equals(cookie.getName()))
             .findAny()
             .orElseThrow(() -> new IllegalArgumentException("쿠키에 토큰이 존재하지 않습니다."))
             .getValue();
