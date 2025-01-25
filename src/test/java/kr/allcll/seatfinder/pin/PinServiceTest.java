@@ -47,13 +47,13 @@ class PinServiceTest {
     @DisplayName("핀이 5개 미만일 경우 정상 등록을 검증한다.")
     @Transactional
     void addPinOnSubject() {
-        //given
+        // given
         pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN);
 
-        //when
+        // when
         List<Pin> result = pinRepository.findAllByToken(NOT_REACH_MAX_TOKEN);
 
-        //then
+        // then
         assertThat(result).hasSize(1);
     }
 
@@ -61,10 +61,10 @@ class PinServiceTest {
     @DisplayName("핀이 5개 이상일 경우 예외를 검증한다.")
     @Transactional
     void canNotAddPinOnSubject() {
-        //given
+        // given
         saveFivePinToMaxToken(subjects);
 
-        //then
+        // then
         assertThatThrownBy(() -> pinService.addPinOnSubject(6L, REACH_MAX_TOKEN))
             .isInstanceOf(IllegalArgumentException.class);
     }
@@ -74,10 +74,10 @@ class PinServiceTest {
     @DisplayName("이미 핀 등록된 과목일 경우 예외를 검증한다.")
     @Transactional
     void alreadyExistPinSubject() {
-        //given
+        // given
         pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN);
 
-        //then
+        // then
         assertThatThrownBy(() -> pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN))
             .isInstanceOf(IllegalArgumentException.class);
     }
