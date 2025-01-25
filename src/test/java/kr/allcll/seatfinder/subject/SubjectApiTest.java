@@ -3,6 +3,7 @@ package kr.allcll.seatfinder.subject;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,6 +32,17 @@ class SubjectApiTest {
 
     @MockitoBean
     private SubjectService subjectService;
+
+    @DisplayName("과목을 조회한다.")
+    @Test
+    void getSubjectsApiTest() throws Exception {
+        mockMvc.perform(get("/api/subjects")
+                .param("subjectId", "1")
+                .param("subjectName", "컴퓨터구조"))
+            .andExpect(status().isOk());
+
+        then(subjectService).should().findSubjectsByCondition(1L, "컴퓨터구조", null, null, null);
+    }
 
     @DisplayName("과목 엑셀 파일을 업로드한다.")
     @Test
