@@ -20,15 +20,18 @@ public class PinService {
     @Transactional
     public void addPinOnSubject(Long subjectId, String token) {
         List<Pin> userPins = pinRepository.findAllByToken(token);
-        validatePinsCount(userPins);
         Subject subject = subjectRepository.findById(subjectId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 과목 입니다."));
+        validateCanAddPin(userPins, subject, token);
         pinRepository.save(new Pin(token, subject));
     }
 
-    private void validatePinsCount(List<Pin> userPins) {
+    private void validateCanAddPin(List<Pin> userPins, Subject subject, String token) {
         if (userPins.size() >= MAX_PIN_NUMBER) {
             throw new IllegalArgumentException("이미 " + MAX_PIN_NUMBER + "개의 핀을 등록했습니다.");
+        }
+        if (pinRepository.findBySubjectAndToken(subject, token).isPresent()) {
+            throw new IllegalArgumentException("이미 핀 등록된 과목 입니다.");
         }
     }
 }
