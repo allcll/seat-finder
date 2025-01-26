@@ -12,10 +12,12 @@ import jakarta.persistence.Table;
 import kr.allcll.seatfinder.TimeEntity;
 import kr.allcll.seatfinder.subject.Subject;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Table(name = "PIN")
+@Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Pin extends TimeEntity {
 

@@ -18,8 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class PinServiceTest {
 
+    private static final int MAX_PIN_NUMBER = 5;
     private static final String NOT_REACH_MAX_TOKEN = "tokenIdNotReachMax";
     private static final String REACH_MAX_TOKEN = "tokenIdReachMax";
+    private static final String PIN_REPOSITORY_FIND_ERROR_MESSAGE = "핀에 등록된 과목이 아닙니다.";
+    private static final String EXIST_PIN_ERROR_MESSAGE = "이미 핀 등록된 과목 입니다.";
+    private static final String OVER_PIN_COUNT_ERROR_MESSAGE = "이미 " + MAX_PIN_NUMBER + "개의 핀을 등록했습니다.";
 
     @Autowired
     private PinService pinService;
@@ -66,7 +70,8 @@ class PinServiceTest {
 
         // then
         assertThatThrownBy(() -> pinService.addPinOnSubject(6L, REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(OVER_PIN_COUNT_ERROR_MESSAGE);
     }
 
 
@@ -79,10 +84,48 @@ class PinServiceTest {
 
         // then
         assertThatThrownBy(() -> pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(EXIST_PIN_ERROR_MESSAGE);
     }
 
-    void saveFivePinToMaxToken(List<Subject> subjects) {
+    @Test
+    @DisplayName("핀의 삭제를 검증한다.")
+    @Transactional
+    void deletePin() {
+        // given
+        saveFivePinToMaxToken(subjects);
+
+        // when
+        pinService.deletePinOnSubject(1L, REACH_MAX_TOKEN);
+
+        // then
+        assertThat(pinRepository.findAllByToken(REACH_MAX_TOKEN)).hasSize(4);
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 핀의 삭제에 대한 예외를 검증한다.")
+    @Transactional
+    void deleteNotExistPin() {
+        // given
+        saveFivePinToMaxToken(subjects);
+
+        // when, then
+        assertThatThrownBy(() -> pinService.deletePinOnSubject(6L, REACH_MAX_TOKEN))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 토큰에 대한 예외를 검증한다.")
+    @Transactional
+    void deleteNotExistToken() {
+        // when, then
+        assertThatThrownBy(() -> pinService.deletePinOnSubject(1L, NOT_REACH_MAX_TOKEN))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
+    }
+
+    private void saveFivePinToMaxToken(List<Subject> subjects) {
         pinRepository.saveAll(
             List.of(
                 new Pin(REACH_MAX_TOKEN, subjects.get(0)),
@@ -93,7 +136,7 @@ class PinServiceTest {
         );
     }
 
-    List<Subject> saveSixSubject() {
+    private List<Subject> saveSixSubject() {
         Subject subjectA = createSubject("컴퓨터구조", "003278", "001", "김보예");
         Subject subjectB = createSubject("운영체제", "003279", "001", "김수민");
         Subject subjectC = createSubject("자료구조", "003280", "001", "김봉케");
