@@ -70,7 +70,8 @@ class PinServiceTest {
 
         // then
         assertThatThrownBy(() -> pinService.addPinOnSubject(6L, REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining(OVER_PIN_COUNT_ERROR_MESSAGE);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(OVER_PIN_COUNT_ERROR_MESSAGE);
     }
 
 
@@ -83,7 +84,8 @@ class PinServiceTest {
 
         // then
         assertThatThrownBy(() -> pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining(EXIST_PIN_ERROR_MESSAGE);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(EXIST_PIN_ERROR_MESSAGE);
     }
 
     @Test
@@ -109,7 +111,8 @@ class PinServiceTest {
 
         // when, then
         assertThatThrownBy(() -> pinService.deletePinOnSubject(6L, REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
     }
 
     @Test
@@ -118,7 +121,8 @@ class PinServiceTest {
     void deleteNotExistToken() {
         // when, then
         assertThatThrownBy(() -> pinService.deletePinOnSubject(1L, NOT_REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
     }
 
     private void saveFivePinToMaxToken(List<Subject> subjects) {
