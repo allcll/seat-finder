@@ -108,6 +108,15 @@ class PinServiceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    @DisplayName("존재하지 않는 토큰에 대한 예외를 검증한다.")
+    @Transactional
+    void deleteNotExistToken() {
+        // when, then
+        assertThatThrownBy(() -> pinService.deletePinOnSubject(1L, NOT_REACH_MAX_TOKEN))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
     private void saveFivePinToMaxToken(List<Subject> subjects) {
         pinRepository.saveAll(
             List.of(
