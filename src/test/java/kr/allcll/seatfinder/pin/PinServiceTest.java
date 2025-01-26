@@ -86,13 +86,13 @@ class PinServiceTest {
     @DisplayName("핀의 삭제를 검증한다.")
     @Transactional
     void deletePin() {
-        //given
+        // given
         saveFivePinToMaxToken(subjects);
 
-        //when
+        // when
         pinService.deletePinOnSubject(1L, REACH_MAX_TOKEN);
 
-        //then
+        // then
         assertThat(pinRepository.findAllByToken(REACH_MAX_TOKEN)).hasSize(4);
     }
 
@@ -100,10 +100,10 @@ class PinServiceTest {
     @DisplayName("등록되지 않은 핀의 삭제에 대한 예외를 검증한다.")
     @Transactional
     void deleteNotExistPin() {
-        //given
+        // given
         saveFivePinToMaxToken(subjects);
 
-        //then
+        // when, then
         assertThatThrownBy(() -> pinService.deletePinOnSubject(6L, REACH_MAX_TOKEN))
             .isInstanceOf(IllegalArgumentException.class);
     }
