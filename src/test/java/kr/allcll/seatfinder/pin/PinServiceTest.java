@@ -18,8 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class PinServiceTest {
 
+    private static final int MAX_PIN_NUMBER = 5;
     private static final String NOT_REACH_MAX_TOKEN = "tokenIdNotReachMax";
     private static final String REACH_MAX_TOKEN = "tokenIdReachMax";
+    private static final String PIN_REPOSITORY_FIND_ERROR_MESSAGE = "핀에 등록된 과목이 아닙니다.";
+    private static final String EXIST_PIN_ERROR_MESSAGE = "이미 핀 등록된 과목 입니다.";
+    private static final String OVER_PIN_COUNT_ERROR_MESSAGE = "이미 " + MAX_PIN_NUMBER + "개의 핀을 등록했습니다.";
 
     @Autowired
     private PinService pinService;
@@ -66,7 +70,7 @@ class PinServiceTest {
 
         // then
         assertThatThrownBy(() -> pinService.addPinOnSubject(6L, REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining(OVER_PIN_COUNT_ERROR_MESSAGE);
     }
 
 
@@ -79,7 +83,7 @@ class PinServiceTest {
 
         // then
         assertThatThrownBy(() -> pinService.addPinOnSubject(1L, NOT_REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining(EXIST_PIN_ERROR_MESSAGE);
     }
 
     @Test
@@ -105,7 +109,7 @@ class PinServiceTest {
 
         // when, then
         assertThatThrownBy(() -> pinService.deletePinOnSubject(6L, REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
     }
 
     @Test
@@ -114,7 +118,7 @@ class PinServiceTest {
     void deleteNotExistToken() {
         // when, then
         assertThatThrownBy(() -> pinService.deletePinOnSubject(1L, NOT_REACH_MAX_TOKEN))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(IllegalArgumentException.class).hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
     }
 
     private void saveFivePinToMaxToken(List<Subject> subjects) {
