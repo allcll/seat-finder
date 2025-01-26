@@ -19,5 +19,6 @@ public class SseEmitterStorage {
 
     public void add(SseEmitter sseEmitter) {
         emitters.add(sseEmitter);
+        sseEmitter.onCompletion(() -> emitters.remove(sseEmitter));
     }
 }
