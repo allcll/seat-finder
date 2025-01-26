@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class Subject {
 
+    private static final String NON_MAJOR_DEPARTMENT_NAME = "대양휴머니티칼리지";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,4 +44,8 @@ public class Subject {
     private String lectureLanguage;         // 강의언어
     private String foreignerOnly;           // 외국인 전용
     private String domesticOnly;            // 내국인 전용
+
+    public boolean isNonMajor() {
+        return NON_MAJOR_DEPARTMENT_NAME.equals(offeringDepartment);
+    }
 }
