@@ -2,7 +2,9 @@ package kr.allcll.seatfinder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 
+import jakarta.servlet.http.Cookie;
 import kr.allcll.seatfinder.pin.PinApi;
 import kr.allcll.seatfinder.pin.PinService;
 import org.junit.jupiter.api.DisplayName;
@@ -25,9 +27,9 @@ class AuthInterceptorTest {
     @MockitoBean
     private PinService pinService;
 
-    @Test
     @DisplayName("쿠키에 토큰이 존재하지 않을 때 토큰의 생성을 확인한다.")
-    void addPinOnSubject() throws Exception {
+    @Test
+    void tokenNotExist() throws Exception {
         // given, when
         MockHttpServletResponse response = mockMvc.perform(post(TOKEN_VALIDATE_API_URL))
             .andReturn()
@@ -35,5 +37,14 @@ class AuthInterceptorTest {
 
         // then
         assertThat(response.getCookie(TOKEN_KEY)).isNotNull();
+    }
+
+    @DisplayName("토큰이 존재할 때에 토큰의 미생성을 확인한다.")
+    @Test
+    void tokenAlreadyExist() throws Exception {
+        Cookie requestCookie = new Cookie("token", "boyeZZANG");
+        mockMvc.perform(post(TOKEN_VALIDATE_API_URL)
+                .cookie(requestCookie))
+            .andExpect(cookie().doesNotExist("token"));
     }
 }

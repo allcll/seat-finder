@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,32 +23,19 @@ class PinApiTest {
 
     private static final String BASE_URL = "/api/pin";
 
-    @DisplayName("토큰이 존재하지 않을 때의 요청과 응답을 확인한다.")
+    @DisplayName("핀 등록을 할 때에 요청과 응답을 확인한다.")
     @Test
     void addPinOnSubjectWhenPinNotExist() throws Exception {
-        // given, when, then
+        // when, then
         mockMvc.perform(post(BASE_URL)
                 .param("subjectId", "1"))
-            .andExpect(status().isOk())
-            .andExpect(cookie().exists("token"));
+            .andExpect(status().isOk());
     }
 
-    @DisplayName("토큰이 이미 존재할 때의 요청과 응답을 확인한다.")
-    @Test
-    void addPinOnSubjectWhenPinExist() throws Exception {
-        // given, when, then
-        Cookie requestCookie = new Cookie("token", "boyeZZANG");
-        mockMvc.perform(post(BASE_URL)
-                .param("subjectId", "1")
-                .cookie(requestCookie))
-            .andExpect(status().isOk())
-            .andExpect(cookie().doesNotExist("token"));
-    }
-
-    @DisplayName("토큰을 삭제할 때 요청과 응답을 확인한다.")
+    @DisplayName("핀을 삭제할 때 요청과 응답을 확인한다.")
     @Test
     void deletePinOnSubject() throws Exception {
-        // given, when, then
+        // when, then
         mockMvc.perform(delete(BASE_URL + "/{subjectId}", 1L))
             .andExpect(status().isOk());
     }
