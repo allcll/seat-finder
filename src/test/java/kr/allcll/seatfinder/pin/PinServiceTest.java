@@ -23,7 +23,7 @@ class PinServiceTest {
     private static final String REACH_MAX_TOKEN = "tokenIdReachMax";
     private static final String PIN_REPOSITORY_FIND_ERROR_MESSAGE = "핀에 등록된 과목이 아닙니다.";
     private static final String EXIST_PIN_ERROR_MESSAGE = "이미 핀 등록된 과목 입니다.";
-    private static final String OVER_PIN_COUNT_ERROR_MESSAGE = "이미 " + MAX_PIN_NUMBER + "개의 핀을 등록했습니다.";
+    private static final String OVER_PIN_COUNT_ERROR_MESSAGE = String.format("이미 %d개의 핀을 등록했습니다.", MAX_PIN_NUMBER);
 
     @Autowired
     private PinService pinService;

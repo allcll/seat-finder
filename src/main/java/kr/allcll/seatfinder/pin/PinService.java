@@ -28,7 +28,7 @@ public class PinService {
 
     private void validateCanAddPin(List<Pin> userPins, Subject subject, String token) {
         if (userPins.size() >= MAX_PIN_NUMBER) {
-            throw new IllegalArgumentException("이미 " + MAX_PIN_NUMBER + "개의 핀을 등록했습니다.");
+            throw new IllegalArgumentException(String.format("이미 %d개의 핀을 등록했습니다.", MAX_PIN_NUMBER));
         }
         if (pinRepository.findBySubjectAndToken(subject, token).isPresent()) {
             throw new IllegalArgumentException("이미 핀 등록된 과목 입니다.");
