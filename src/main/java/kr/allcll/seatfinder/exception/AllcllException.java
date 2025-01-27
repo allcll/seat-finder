@@ -1,5 +1,8 @@
 package kr.allcll.seatfinder.exception;
 
+import lombok.Getter;
+
+@Getter
 public class AllcllException extends RuntimeException {
 
     private final String errorCode;
@@ -7,10 +10,6 @@ public class AllcllException extends RuntimeException {
     public AllcllException(String message, String errorCode) {
         super(message);
         this.errorCode = errorCode;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
     }
 
     public static AllcllException from(ExceptionMessage e) {
