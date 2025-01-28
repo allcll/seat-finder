@@ -1,6 +1,6 @@
 package kr.allcll.seatfinder.exception;
 
-public enum ExceptionMessage {
+public enum AllcllErrorCode {
 
     MAX_PIN_EXCEPTION("이미 %d개의 핀을 등록했습니다."),
     EXIST_PIN_EXCEPTION("이미 핀 등록된 과목입니다."),
@@ -9,7 +9,7 @@ public enum ExceptionMessage {
 
     private String message;
 
-    ExceptionMessage(String message) {
+    AllcllErrorCode(String message) {
         this.message = message;
     }
 
