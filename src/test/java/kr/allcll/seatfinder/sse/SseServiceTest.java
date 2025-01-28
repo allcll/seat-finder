@@ -2,7 +2,6 @@ package kr.allcll.seatfinder.sse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import groovy.util.logging.Slf4j;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import java.io.BufferedReader;
@@ -19,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 
-@Slf4j
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = "app.scheduling.enabled=false") // 테스트에서 스케줄러 비활성화
 class SseServiceTest {
