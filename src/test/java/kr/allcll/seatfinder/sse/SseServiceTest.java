@@ -80,22 +80,16 @@ class SseServiceTest {
         sseService.propagate("message", "Hello, SSE!");
 
         // then
-        SseTestHelper.assertResponseIsEqualsToMessage(response1, "retry:1000\n"
+        String expected = "retry:1000\n"
             + "event:connection\n"
             + "data:success\n"
             + "\n"
             + "retry:1000\n"
             + "event:message\n"
             + "data:\"Hello, SSE!\"\n"
-            + "\n");
-        SseTestHelper.assertResponseIsEqualsToMessage(response2, "retry:1000\n"
-            + "event:connection\n"
-            + "data:success\n"
-            + "\n"
-            + "retry:1000\n"
-            + "event:message\n"
-            + "data:\"Hello, SSE!\"\n"
-            + "\n");
+            + "\n";
+        SseTestHelper.assertResponseIsEqualsToMessage(response1, expected);
+        SseTestHelper.assertResponseIsEqualsToMessage(response2, expected);
     }
 
     private static class SseTestHelper {
