@@ -29,3 +29,7 @@ logging:
       allcll:
         seatfinder:
           sse: debug
+
+app:
+  scheduling:
+    enabled: true
