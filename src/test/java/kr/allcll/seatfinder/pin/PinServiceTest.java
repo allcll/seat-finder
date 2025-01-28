@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
-import kr.allcll.seatfinder.pin.dto.PinSubjectResponse;
+import kr.allcll.seatfinder.pin.dto.SubjectIdsResponse;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -150,10 +150,10 @@ class PinServiceTest {
         pinRepository.save(new Pin(TOKEN, subject));
 
         // when
-        List<PinSubjectResponse> responses = pinService.retrievePins(TOKEN);
+        SubjectIdsResponse response = pinService.retrievePins(TOKEN);
 
         // then
-        assertThat(responses).hasSize(expectSize);
+        assertThat(response.subjectIds()).hasSize(expectSize);
     }
 
     @DisplayName("등록된 핀이 존재할 때 예외가 발생하지 않음을 검증한다.")
@@ -163,10 +163,10 @@ class PinServiceTest {
         int expectSize = 0;
 
         // when
-        List<PinSubjectResponse> responses = pinService.retrievePins(TOKEN);
+        SubjectIdsResponse response = pinService.retrievePins(TOKEN);
 
         // then
-        assertThat(responses).hasSize(expectSize);
+        assertThat(response.subjectIds()).hasSize(expectSize);
     }
 
     private Subject createSubject(
