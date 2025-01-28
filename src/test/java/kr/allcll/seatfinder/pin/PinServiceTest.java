@@ -40,8 +40,8 @@ class PinServiceTest {
         subjectRepository.deleteAllInBatch();
     }
 
-    @DisplayName("핀이 5개 미만일 경우 정상 등록을 검증한다.")
     @Test
+    @DisplayName("핀이 5개 미만일 경우 정상 등록을 검증한다.")
     void addPinOnSubject() {
         // given
         Subject subjectA = createSubject("컴퓨터구조", "003278", "001", "김보예");
@@ -55,8 +55,8 @@ class PinServiceTest {
         assertThat(result).hasSize(1);
     }
 
-    @DisplayName("핀이 5개 이상일 경우 예외를 검증한다.")
     @Test
+    @DisplayName("핀이 5개 이상일 경우 예외를 검증한다.")
     void canNotAddPinOnSubject() {
         // given
         Subject subjectA = createSubject("컴퓨터구조", "003278", "001", "김보예");
@@ -82,8 +82,8 @@ class PinServiceTest {
     }
 
 
-    @DisplayName("이미 핀 등록된 과목일 경우 예외를 검증한다.")
     @Test
+    @DisplayName("이미 핀 등록된 과목일 경우 예외를 검증한다.")
     void alreadyExistPinSubject() {
         // given
         Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
@@ -97,8 +97,8 @@ class PinServiceTest {
             .hasMessageContaining(expectExceptionMessage);
     }
 
-    @DisplayName("핀의 삭제를 검증한다.")
     @Test
+    @DisplayName("핀의 삭제를 검증한다.")
     void deletePin() {
         // given
         Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
@@ -112,8 +112,8 @@ class PinServiceTest {
         assertThat(pinRepository.findAllByToken(TOKEN)).hasSize(0);
     }
 
-    @DisplayName("등록되지 않은 핀의 삭제에 대한 예외를 검증한다.")
     @Test
+    @DisplayName("등록되지 않은 핀의 삭제에 대한 예외를 검증한다.")
     void deleteNotExistPin() {
         // given
         Subject pinnedSubject = createSubject("핀과목", "123456", "001", "김보예");
@@ -127,8 +127,8 @@ class PinServiceTest {
             .hasMessageContaining(AllcllErrorCode.PIN_SUBJECT_MISMATCH.getMessage());
     }
 
-    @DisplayName("존재하지 않는 토큰에 대한 예외를 검증한다.")
     @Test
+    @DisplayName("존재하지 않는 토큰에 대한 예외를 검증한다.")
     void deleteNotExistToken() {
         // given
         Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
@@ -140,11 +140,11 @@ class PinServiceTest {
             .hasMessageContaining(AllcllErrorCode.PIN_SUBJECT_MISMATCH.getMessage());
     }
 
-    @DisplayName("등록된 핀이 존재할 때 조회 기능을 테스트한다.")
     @Test
+    @DisplayName("등록된 핀이 존재할 때 조회 기능을 테스트한다.")
     void retrieveExistPins() {
         // given
-        int expectSize = 1;
+        int expectedSize = 1;
         Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
         subjectRepository.save(subject);
         pinRepository.save(new Pin(TOKEN, subject));
@@ -153,20 +153,20 @@ class PinServiceTest {
         SubjectIdsResponse response = pinService.retrievePins(TOKEN);
 
         // then
-        assertThat(response.subjects()).hasSize(expectSize);
+        assertThat(response.subjects()).hasSize(expectedSize);
     }
 
-    @DisplayName("등록된 핀이 존재할 때 예외가 발생하지 않음을 검증한다.")
     @Test
+    @DisplayName("등록된 핀이 존재할 때 예외가 발생하지 않음을 검증한다.")
     void retrievePins() {
         // given
-        int expectSize = 0;
+        int expectedSize = 0;
 
         // when
         SubjectIdsResponse response = pinService.retrievePins(TOKEN);
 
         // then
-        assertThat(response.subjects()).hasSize(expectSize);
+        assertThat(response.subjects()).hasSize(expectedSize);
     }
 
     private Subject createSubject(

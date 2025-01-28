@@ -51,7 +51,18 @@ class PinApiTest {
     @DisplayName("핀을 조회할 때 요청과 응답을 확인한다.")
     void retrievePins() throws Exception {
         // given
-        String expect = "{\"subjects\":[{\"subjectId\":1},{\"subjectId\":2}]}";
+        String expected = """
+                {
+                    "subjects":[
+                        {
+                            "subjectId":1
+                        },
+                        {
+                            "subjectId":2
+                        }
+                    ]
+                }
+            """;
 
         List<SubjectIdResponse> subjects = List.of(new SubjectIdResponse(1L), new SubjectIdResponse(2L));
         when(pinService.retrievePins("tokenValue"))
@@ -64,6 +75,6 @@ class PinApiTest {
             .andReturn();
 
         // then
-        assertThat(result.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expect);
+        assertThat(result.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);
     }
 }
