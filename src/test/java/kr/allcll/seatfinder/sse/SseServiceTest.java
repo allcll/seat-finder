@@ -22,9 +22,9 @@ import org.springframework.test.context.TestPropertySource;
 @Slf4j
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = "app.scheduling.enabled=false") // 테스트에서 스케줄러 비활성화
-class SseIntegrationTest {
+class SseServiceTest {
 
-    private static final Logger log = LoggerFactory.getLogger(SseIntegrationTest.class);
+    private static final Logger log = LoggerFactory.getLogger(SseServiceTest.class);
 
     @Autowired
     private SseService sseService;
