@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import kr.allcll.seatfinder.exception.AllcllErrorCode;
+import kr.allcll.seatfinder.exception.AllcllException;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,9 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 class PinServiceTest {
 
     private static final int MAX_PIN_NUMBER = 5;
-    private static final String PIN_REPOSITORY_FIND_ERROR_MESSAGE = "핀에 등록된 과목이 아닙니다.";
-    private static final String EXIST_PIN_ERROR_MESSAGE = "이미 핀 등록된 과목 입니다.";
-    private static final String OVER_PIN_COUNT_ERROR_MESSAGE = String.format("이미 %d개의 핀을 등록했습니다.", MAX_PIN_NUMBER);
 
     @Autowired
     private PinService pinService;
@@ -77,8 +76,8 @@ class PinServiceTest {
 
         // when, then
         assertThatThrownBy(() -> pinService.addPinOnSubject(overCountSubject.getId(), TOKEN))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining(OVER_PIN_COUNT_ERROR_MESSAGE);
+            .isInstanceOf(AllcllException.class)
+            .hasMessageContaining(String.format(AllcllErrorCode.PIN_LIMIT_EXCEEDED.getMessage(), MAX_PIN_NUMBER));
     }
 
 
@@ -89,11 +88,12 @@ class PinServiceTest {
         Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
         subjectRepository.save(subject);
         pinRepository.save(new Pin(TOKEN, subject));
+        String expectExceptionMessage = new AllcllException(AllcllErrorCode.DUPLICATE_PIN, "컴퓨터구조").getMessage();
 
         // when, then
         assertThatThrownBy(() -> pinService.addPinOnSubject(subject.getId(), TOKEN))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining(EXIST_PIN_ERROR_MESSAGE);
+            .isInstanceOf(AllcllException.class)
+            .hasMessageContaining(expectExceptionMessage);
     }
 
     @Test
@@ -123,8 +123,8 @@ class PinServiceTest {
 
         // when, then
         assertThatThrownBy(() -> pinService.deletePinOnSubject(notPinnedSubject.getId(), token))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
+            .isInstanceOf(AllcllException.class)
+            .hasMessageContaining(AllcllErrorCode.PIN_SUBJECT_MISMATCH.getMessage());
     }
 
     @Test
@@ -136,8 +136,8 @@ class PinServiceTest {
 
         // when, then
         assertThatThrownBy(() -> pinService.deletePinOnSubject(subject.getId(), TOKEN))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining(PIN_REPOSITORY_FIND_ERROR_MESSAGE);
+            .isInstanceOf(AllcllException.class)
+            .hasMessageContaining(AllcllErrorCode.PIN_SUBJECT_MISMATCH.getMessage());
     }
 
     private Subject createSubject(

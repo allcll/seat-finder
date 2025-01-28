@@ -1,6 +1,8 @@
 package kr.allcll.seatfinder.pin;
 
 import java.util.List;
+import kr.allcll.seatfinder.exception.AllcllErrorCode;
+import kr.allcll.seatfinder.exception.AllcllException;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,26 +23,26 @@ public class PinService {
     public void addPinOnSubject(Long subjectId, String token) {
         List<Pin> userPins = pinRepository.findAllByToken(token);
         Subject subject = subjectRepository.findById(subjectId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 과목 입니다."));
+            .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
         validateCanAddPin(userPins, subject, token);
         pinRepository.save(new Pin(token, subject));
     }
 
     private void validateCanAddPin(List<Pin> userPins, Subject subject, String token) {
         if (userPins.size() >= MAX_PIN_NUMBER) {
-            throw new IllegalArgumentException(String.format("이미 %d개의 핀을 등록했습니다.", MAX_PIN_NUMBER));
+            throw new AllcllException(AllcllErrorCode.PIN_LIMIT_EXCEEDED, MAX_PIN_NUMBER);
         }
         if (pinRepository.findBySubjectAndToken(subject, token).isPresent()) {
-            throw new IllegalArgumentException("이미 핀 등록된 과목 입니다.");
+            throw new AllcllException(AllcllErrorCode.DUPLICATE_PIN, subject.getSubjectName());
         }
     }
 
     @Transactional
     public void deletePinOnSubject(Long subjectId, String token) {
         Subject subject = subjectRepository.findById(subjectId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 과목 입니다."));
+            .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
         Pin pin = pinRepository.findBySubjectAndToken(subject, token)
-            .orElseThrow(() -> new IllegalArgumentException("핀에 등록된 과목이 아닙니다."));
+            .orElseThrow(() -> new AllcllException(AllcllErrorCode.PIN_SUBJECT_MISMATCH));
         pinRepository.deleteById(pin.getId());
     }
 }
