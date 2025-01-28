@@ -20,4 +20,12 @@ public class SeatStorage {
             .limit(limit)
             .toList();
     }
+
+    public void add(Seat seat) {
+        seats.add(seat);
+    }
+
+    public void addAll(List<Seat> seats) {
+        this.seats.addAll(seats);
+    }
 }
