@@ -3,6 +3,8 @@ package kr.allcll.seatfinder.pin;
 import java.util.List;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
+import kr.allcll.seatfinder.pin.dto.SubjectIdResponse;
+import kr.allcll.seatfinder.pin.dto.SubjectIdsResponse;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +46,12 @@ public class PinService {
         Pin pin = pinRepository.findBySubjectAndToken(subject, token)
             .orElseThrow(() -> new AllcllException(AllcllErrorCode.PIN_SUBJECT_MISMATCH));
         pinRepository.deleteById(pin.getId());
+    }
+
+    public SubjectIdsResponse retrievePins(String token) {
+        List<Pin> pins = pinRepository.findAllByToken(token);
+        return new SubjectIdsResponse(pins.stream()
+            .map(pin -> new SubjectIdResponse(pin.getSubject().getId()))
+            .toList());
     }
 }

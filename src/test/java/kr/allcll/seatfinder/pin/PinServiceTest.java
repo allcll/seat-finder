@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
+import kr.allcll.seatfinder.pin.dto.SubjectIdsResponse;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,14 +116,13 @@ class PinServiceTest {
     @DisplayName("등록되지 않은 핀의 삭제에 대한 예외를 검증한다.")
     void deleteNotExistPin() {
         // given
-        String token = "token";
         Subject pinnedSubject = createSubject("핀과목", "123456", "001", "김보예");
         Subject notPinnedSubject = createSubject("핀 안된 과목", "654321", "001", "김주환");
         subjectRepository.saveAll(List.of(pinnedSubject, notPinnedSubject));
-        pinRepository.save(new Pin(token, pinnedSubject));
+        pinRepository.save(new Pin(TOKEN, pinnedSubject));
 
         // when, then
-        assertThatThrownBy(() -> pinService.deletePinOnSubject(notPinnedSubject.getId(), token))
+        assertThatThrownBy(() -> pinService.deletePinOnSubject(notPinnedSubject.getId(), TOKEN))
             .isInstanceOf(AllcllException.class)
             .hasMessageContaining(AllcllErrorCode.PIN_SUBJECT_MISMATCH.getMessage());
     }
@@ -138,6 +138,35 @@ class PinServiceTest {
         assertThatThrownBy(() -> pinService.deletePinOnSubject(subject.getId(), TOKEN))
             .isInstanceOf(AllcllException.class)
             .hasMessageContaining(AllcllErrorCode.PIN_SUBJECT_MISMATCH.getMessage());
+    }
+
+    @Test
+    @DisplayName("등록된 핀이 존재할 때 조회 기능을 테스트한다.")
+    void retrieveExistPins() {
+        // given
+        int expectedSize = 1;
+        Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
+        subjectRepository.save(subject);
+        pinRepository.save(new Pin(TOKEN, subject));
+
+        // when
+        SubjectIdsResponse response = pinService.retrievePins(TOKEN);
+
+        // then
+        assertThat(response.subjects()).hasSize(expectedSize);
+    }
+
+    @Test
+    @DisplayName("등록된 핀이 존재할 때 예외가 발생하지 않음을 검증한다.")
+    void retrievePins() {
+        // given
+        int expectedSize = 0;
+
+        // when
+        SubjectIdsResponse response = pinService.retrievePins(TOKEN);
+
+        // then
+        assertThat(response.subjects()).hasSize(expectedSize);
     }
 
     private Subject createSubject(
