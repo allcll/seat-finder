@@ -153,7 +153,7 @@ class PinServiceTest {
         SubjectIdsResponse response = pinService.retrievePins(TOKEN);
 
         // then
-        assertThat(response.subjectIds()).hasSize(expectSize);
+        assertThat(response.subjects()).hasSize(expectSize);
     }
 
     @DisplayName("등록된 핀이 존재할 때 예외가 발생하지 않음을 검증한다.")
@@ -166,7 +166,7 @@ class PinServiceTest {
         SubjectIdsResponse response = pinService.retrievePins(TOKEN);
 
         // then
-        assertThat(response.subjectIds()).hasSize(expectSize);
+        assertThat(response.subjects()).hasSize(expectSize);
     }
 
     private Subject createSubject(
