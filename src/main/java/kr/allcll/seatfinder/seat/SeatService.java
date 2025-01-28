@@ -1,6 +1,7 @@
 package kr.allcll.seatfinder.seat;
 
 import java.util.List;
+import kr.allcll.seatfinder.seat.dto.SeatsResponse;
 import kr.allcll.seatfinder.sse.SseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,6 +20,6 @@ public class SeatService {
     @Scheduled(fixedRate = 1000)
     public void sendNonMajorSeats() {
         List<Seat> nonMajorSeats = seatStorage.getNonMajorSeats(NON_MAJOR_SUBJECT_QUERY_LIMIT);
-        sseService.propagate(NON_MAJOR_SEATS_EVENT_NAME, nonMajorSeats);
+        sseService.propagate(NON_MAJOR_SEATS_EVENT_NAME, SeatsResponse.from(nonMajorSeats));
     }
 }
