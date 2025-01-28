@@ -7,17 +7,13 @@ public class AllcllException extends RuntimeException {
 
     private final String errorCode;
 
-    public AllcllException(String message, String errorCode) {
-        super(message);
-        this.errorCode = errorCode;
+    public AllcllException(AllcllErrorCode e) {
+        super(e.getMessage());
+        this.errorCode = e.name();
     }
 
-    public static AllcllException from(ExceptionMessage e) {
-        return new AllcllException(e.getMessage(), e.name());
-    }
-
-    public static AllcllException of(int number, ExceptionMessage e) {
-        String exceptionMessage = String.format(e.getMessage(), number);
-        return new AllcllException(exceptionMessage, e.name());
+    public AllcllException(AllcllErrorCode e, Object... args) {
+        super(String.format(e.getMessage(), args));
+        this.errorCode = e.name();
     }
 }

@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kr.allcll.seatfinder.exception.AllcllException;
-import kr.allcll.seatfinder.exception.ExceptionMessage;
+import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,7 +77,7 @@ class PinServiceTest {
         // when, then
         assertThatThrownBy(() -> pinService.addPinOnSubject(overCountSubject.getId(), TOKEN))
             .isInstanceOf(AllcllException.class)
-            .hasMessageContaining(String.format(ExceptionMessage.MAX_PIN_EXCEPTION.getMessage(), MAX_PIN_NUMBER));
+            .hasMessageContaining(String.format(AllcllErrorCode.MAX_PIN_EXCEPTION.getMessage(), MAX_PIN_NUMBER));
     }
 
 
@@ -92,7 +92,7 @@ class PinServiceTest {
         // when, then
         assertThatThrownBy(() -> pinService.addPinOnSubject(subject.getId(), TOKEN))
             .isInstanceOf(AllcllException.class)
-            .hasMessageContaining(ExceptionMessage.EXIST_PIN_EXCEPTION.getMessage());
+            .hasMessageContaining(AllcllErrorCode.EXIST_PIN_EXCEPTION.getMessage());
     }
 
     @Test
@@ -123,7 +123,7 @@ class PinServiceTest {
         // when, then
         assertThatThrownBy(() -> pinService.deletePinOnSubject(notPinnedSubject.getId(), token))
             .isInstanceOf(AllcllException.class)
-            .hasMessageContaining(ExceptionMessage.PIN_AND_SUBJECT_NOT_MATCH.getMessage());
+            .hasMessageContaining(AllcllErrorCode.PIN_AND_SUBJECT_NOT_MATCH.getMessage());
     }
 
     @Test
@@ -136,7 +136,7 @@ class PinServiceTest {
         // when, then
         assertThatThrownBy(() -> pinService.deletePinOnSubject(subject.getId(), TOKEN))
             .isInstanceOf(AllcllException.class)
-            .hasMessageContaining(ExceptionMessage.PIN_AND_SUBJECT_NOT_MATCH.getMessage());
+            .hasMessageContaining(AllcllErrorCode.PIN_AND_SUBJECT_NOT_MATCH.getMessage());
     }
 
     private Subject createSubject(
