@@ -44,8 +44,8 @@ class SubjectServiceTest {
         );
     }
 
-    @DisplayName("과목명으로 과목을 조회한다.")
     @Test
+    @DisplayName("과목명으로 과목을 조회한다.")
     void findSubjectByQueryTest() {
         SubjectsResponse subjectsResponse = subjectService.findSubjectsByCondition(null, "컴퓨터구조", null, null, null);
 
@@ -62,8 +62,8 @@ class SubjectServiceTest {
             );
     }
 
-    @DisplayName("학수번호, 분반, 교수명으로 과목을 조회한다.")
     @Test
+    @DisplayName("학수번호, 분반, 교수명으로 과목을 조회한다.")
     void findSubjectByQueryTest2() {
         SubjectsResponse subjectsResponse = subjectService.findSubjectsByCondition(null, null, "003279", "001", "노홍철");
 
@@ -79,12 +79,22 @@ class SubjectServiceTest {
             );
     }
 
-    @DisplayName("존재하지 않는 조건으로 과목을 조회한다.")
     @Test
+    @DisplayName("존재하지 않는 조건으로 과목을 조회한다.")
     void findSubjectByQueryTest3() {
         SubjectsResponse subjectsResponse = subjectService.findSubjectsByCondition(100L, null, "003279", "001",
             "유재석");
 
         assertThat(subjectsResponse.subjectResponses()).hasSize(0);
+    }
+
+    @Test
+    @DisplayName("전체 과목을 조회한다.")
+    void getAllSubjects() {
+        // when
+        SubjectsResponse allSubjects = subjectService.findSubjectsByCondition(null, null, null, null, null);
+
+        // then
+        assertThat(allSubjects.subjectResponses()).hasSize(8);
     }
 }
