@@ -16,5 +16,20 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
-#        format_sql: true
-#        show_sql: true
+  #        format_sql: true
+  #        show_sql: true
+
+  mvc:
+    async:
+      request-timeout: 60000 # 60 seconds
+
+logging:
+  level:
+    kr:
+      allcll:
+        seatfinder:
+          sse: debug
+
+app:
+  scheduling:
+    enabled: true
