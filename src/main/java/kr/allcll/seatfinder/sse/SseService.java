@@ -14,9 +14,9 @@ public class SseService {
 
     private final SseEmitterStorage sseEmitterStorage;
 
-    public SseEmitter connect() {
+    public SseEmitter connect(String token) {
         SseEmitter sseEmitter = createSseEmitter();
-        sseEmitterStorage.add(sseEmitter);
+        sseEmitterStorage.add(token, sseEmitter);
         SseEventBuilder initialEvent = SseEventBuilderFactory.createInitialEvent();
         sendEvent(sseEmitter, initialEvent);
         return sseEmitter;

@@ -1,5 +1,6 @@
 package kr.allcll.seatfinder.sse;
 
+import kr.allcll.seatfinder.ThreadLocalHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ public class SseApi {
 
     @GetMapping(value = "/api/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> getServerSentEventConnection() {
-        return ResponseEntity.ok(sseService.connect());
+        String token = ThreadLocalHolder.SHARED_TOKEN.get();
+        return ResponseEntity.ok(sseService.connect(token));
     }
 }
