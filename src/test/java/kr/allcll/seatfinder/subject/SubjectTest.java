@@ -12,7 +12,7 @@ class SubjectTest {
     void isNonMajorTest() {
         Subject subject = new Subject(1L, "대양휴머니티칼리지", "대양휴머니티칼리지", "009352", "001", "사고와표현1", "공통교양필수", "학문기초", "1",
             "3.0", "3", "0", "이론", null, "화 목 09:00~10:30", "세101", "노지현", "국어국문학과", "외국인대상과목, 기초(Beginner)", null,
-            null, "영어", "Y", null);
+            null, "영어", "Y", null, "3210");
 
         assertThat(subject.isNonMajor()).isTrue();
     }
@@ -22,7 +22,7 @@ class SubjectTest {
     void isNonMajorTest2() {
         Subject subject = new Subject(1L, "소프트웨어융합대학", "컴퓨터공학과", "009352", "001", "사고와표현1", "공통교양필수", "학문기초", "1",
             "3.0", "3", "0", "이론", null, "화 목 09:00~10:30", "세101", "노지현", "국어국문학과", "외국인대상과목, 기초(Beginner)", null,
-            null, "영어", "Y", null);
+            null, "영어", "Y", null, "3210");
 
         assertThat(subject.isNonMajor()).isFalse();
     }

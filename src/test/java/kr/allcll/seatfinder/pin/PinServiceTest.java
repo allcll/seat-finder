@@ -176,6 +176,6 @@ class PinServiceTest {
         String professorName
     ) {
         return new Subject(null, "", "", subjectCode, classCode, subjectName, "", "", "", "", "", "", "", "", "",
-            "", professorName, "", "", "", "", "", "", "");
+            "", professorName, "", "", "", "", "", "", "", "");
     }
 }

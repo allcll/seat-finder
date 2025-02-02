@@ -22,7 +22,7 @@ public class Subject {
     private Long id;
 
     private String offeringUniversity;      // 개설대학
-    private String offeringDepartment;      // 개설학과전공
+    private String offeringDepartment;      // 개설학과전공 -> manage_dept_nm
     private String subjectCode;             // 학수번호
     private String classCode;               // 분반
     private String subjectName;             // 교과목명
