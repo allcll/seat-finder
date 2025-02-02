@@ -32,7 +32,7 @@ public class Basket extends TimeEntity {
     @Column(name = "smt_cd")
     private String smtCd;
 
-    @Column(name = "`year`")
+    @Column(name = "academic_year")
     private String year;
 
     @Column(name = "curi_no")
