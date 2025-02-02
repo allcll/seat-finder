@@ -31,8 +31,8 @@ class BasketServiceTest {
         subjectRepository.deleteAllInBatch();
     }
 
-    @DisplayName("전체 관심과목 기능의 정상 동작을 확인한다.")
     @Test
+    @DisplayName("전체 관심과목 기능의 정상 동작을 확인한다.")
     void getAllSubjects() {
         // given
         Subject subjectA = createSubject("과목A", "001234", "001", "3210");
@@ -49,8 +49,8 @@ class BasketServiceTest {
         assertThat(allSubjects.baskets()).hasSize(expectedSize);
     }
 
-    @DisplayName("전체 관심과목 조회를 했을 시 각 과목 조회를 확인한다.")
     @Test
+    @DisplayName("전체 관심과목 조회를 했을 시 각 과목 조회를 확인한다.")
     void getEachSubject() {
         // given
         Subject subjectA = createSubject("과목A", "001234", "001", "3210");
