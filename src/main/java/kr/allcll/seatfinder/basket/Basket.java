@@ -32,7 +32,7 @@ public class Basket extends TimeEntity {
     @Column(name = "smt_cd")
     private String smtCd;
 
-    @Column(name = "year")
+    @Column(name = "`year`")
     private String year;
 
     @Column(name = "curi_no")
@@ -80,4 +80,28 @@ public class Basket extends TimeEntity {
     @Column(name = "tot_rcnt")
     private Integer totRcnt;
 
+    public Basket(Subject subject, String semesterAt, String smtCd, String year, String curiNo, String className,
+        String studentDiv, String studentDivNm, String studentDeptCd, String studentDeptCdNm, String deptCd,
+        String orgnClsfCd, Integer totLimitRcnt, Integer outLimitRcnt, Integer totOutRcnt, Integer remainOutRcnt,
+        Integer remainOtherRcnt, Integer rcnt, Integer totRcnt) {
+        this.subject = subject;
+        this.semesterAt = semesterAt;
+        this.smtCd = smtCd;
+        this.year = year;
+        this.curiNo = curiNo;
+        this.className = className;
+        this.studentDiv = studentDiv;
+        this.studentDivNm = studentDivNm;
+        this.studentDeptCd = studentDeptCd;
+        this.studentDeptCdNm = studentDeptCdNm;
+        this.deptCd = deptCd;
+        this.orgnClsfCd = orgnClsfCd;
+        this.totLimitRcnt = totLimitRcnt;
+        this.outLimitRcnt = outLimitRcnt;
+        this.totOutRcnt = totOutRcnt;
+        this.remainOutRcnt = remainOutRcnt;
+        this.remainOtherRcnt = remainOtherRcnt;
+        this.rcnt = rcnt;
+        this.totRcnt = totRcnt;
+    }
 }
