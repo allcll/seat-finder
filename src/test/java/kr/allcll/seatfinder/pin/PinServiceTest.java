@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import kr.allcll.seatfinder.basket.BasketRepository;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
 import kr.allcll.seatfinder.pin.dto.SubjectIdsResponse;
@@ -31,12 +32,16 @@ class PinServiceTest {
     @Autowired
     private SubjectRepository subjectRepository;
 
+    @Autowired
+    private BasketRepository basketRepository;
+
     private static final String TOKEN = "token";
 
     @BeforeEach
     @Transactional
     void setUp() {
         pinRepository.deleteAllInBatch();
+        basketRepository.deleteAllInBatch();
         subjectRepository.deleteAllInBatch();
     }
 
