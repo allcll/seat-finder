@@ -44,6 +44,7 @@ public class Subject {
     private String lectureLanguage;         // 강의언어
     private String foreignerOnly;           // 외국인 전용
     private String domesticOnly;            // 내국인 전용
+    private String deptCd; //개설학과코드
 
     public boolean isNonMajor() {
         return NON_MAJOR_DEPARTMENT_NAME.equals(offeringDepartment);
