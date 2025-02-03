@@ -1,7 +1,6 @@
 package kr.allcll.seatfinder.subject;
 
 import java.util.List;
-import kr.allcll.seatfinder.subject.dto.SubjectsRequest;
 import kr.allcll.seatfinder.subject.dto.SubjectsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,12 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;
-
-    @Transactional
-    public void save(SubjectsRequest subjectRequests) {
-        List<Subject> subjects = subjectRequests.toEntity();
-        subjectRepository.saveAll(subjects);
-    }
 
     public SubjectsResponse findSubjectsByCondition(
         Long subjectId,
