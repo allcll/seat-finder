@@ -13,12 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;
-//
-//    @Transactional
-//    public void save(SubjectsRequest subjectRequests) {
-//        List<Subject> subjects = subjectRequests.toEntity();
-//        subjectRepository.saveAll(subjects);
-//    }
 
     public SubjectsResponse findSubjectsByCondition(
         Long subjectId,
