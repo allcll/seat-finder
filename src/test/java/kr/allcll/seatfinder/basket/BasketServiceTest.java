@@ -73,7 +73,8 @@ class BasketServiceTest {
         String registerDepartment,
         Integer eachCount
     ) {
-        return new Basket(subject, "", "", "", "", "", "", studentBelong, "", registerDepartment, "", "", 200, 0, 0, 0,
-            0, eachCount, 10);
+        return new Basket(subject, "", "", "", "", "", studentBelong,
+            "", registerDepartment, "", "", 200, 0, 0,
+            0, 0, eachCount, 10);
     }
 }
