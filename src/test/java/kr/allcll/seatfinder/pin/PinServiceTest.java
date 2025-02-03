@@ -1,5 +1,6 @@
 package kr.allcll.seatfinder.pin;
 
+import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -172,15 +173,5 @@ class PinServiceTest {
 
         // then
         assertThat(response.subjects()).hasSize(expectedSize);
-    }
-
-    private Subject createSubject(
-        String subjectName,
-        String subjectCode,
-        String classCode,
-        String professorName
-    ) {
-        return new Subject(null, "", "", subjectCode, classCode, subjectName, "", "", "", "", "", "", "", "", "",
-            "", professorName, "", "", "", "", "", "", "", "");
     }
 }

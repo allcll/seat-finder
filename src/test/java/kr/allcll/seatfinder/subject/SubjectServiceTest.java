@@ -1,12 +1,12 @@
 package kr.allcll.seatfinder.subject;
 
+import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
 import kr.allcll.seatfinder.subject.dto.SubjectResponse;
 import kr.allcll.seatfinder.subject.dto.SubjectsResponse;
-import kr.allcll.seatfinder.support.fixture.SubjectFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,14 +32,14 @@ class SubjectServiceTest {
     private void initializeSubjects() {
         subjectRepository.saveAll(
             List.of(
-                SubjectFixture.createSubject(null, "컴퓨터구조", "003278", "001", "유재석"),
-                SubjectFixture.createSubject(null, "운영체제", "003279", "001", "노홍철"),
-                SubjectFixture.createSubject(null, "자료구조", "003280", "001", "하하"),
-                SubjectFixture.createSubject(null, "알고리즘", "003281", "001", "길"),
-                SubjectFixture.createSubject(null, "컴퓨터구조", "003278", "002", "정형돈"),
-                SubjectFixture.createSubject(null, "운영체제", "003279", "002", "나영석"),
-                SubjectFixture.createSubject(null, "자료구조", "003280", "003", "박명수"),
-                SubjectFixture.createSubject(null, "알고리즘", "003281", "004", "전진")
+                createSubject("컴퓨터구조", "003278", "001", "유재석"),
+                createSubject("운영체제", "003279", "001", "노홍철"),
+                createSubject("자료구조", "003280", "001", "하하"),
+                createSubject("알고리즘", "003281", "001", "길"),
+                createSubject("컴퓨터구조", "003278", "002", "정형돈"),
+                createSubject("운영체제", "003279", "002", "나영석"),
+                createSubject("자료구조", "003280", "003", "박명수"),
+                createSubject("알고리즘", "003281", "004", "전진")
             )
         );
     }

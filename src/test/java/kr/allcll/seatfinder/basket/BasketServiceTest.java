@@ -1,5 +1,6 @@
 package kr.allcll.seatfinder.basket;
 
+import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubject;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -64,16 +65,6 @@ class BasketServiceTest {
 
         // then
         assertThat(allSubjects.baskets().getFirst().departmentRegisters()).hasSize(expectedSize);
-    }
-
-    private Subject createSubject(
-        String subjectName,
-        String subjectCode,
-        String classCode,
-        String deptCd
-    ) {
-        return new Subject(null, "", "", subjectCode, classCode, subjectName, "", "", "", "", "", "", "", "", "",
-            "", "", "", "", "", "", "", "", "", deptCd);
     }
 
     private Basket createBasket(

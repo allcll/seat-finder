@@ -11,21 +11,21 @@ public class SubjectSpecifications {
 
     public static Specification<Subject> hasSubjectName(String subjectName) {
         return (root, query, builder) ->
-            subjectName == null ? null : builder.equal(root.get("subjectName"), subjectName);
+            subjectName == null ? null : builder.equal(root.get("curiNm"), subjectName);
     }
 
     public static Specification<Subject> hasSubjectCode(String subjectCode) {
         return (root, query, builder) ->
-            subjectCode == null ? null : builder.equal(root.get("subjectCode"), subjectCode);
+            subjectCode == null ? null : builder.equal(root.get("curiNo"), subjectCode);
     }
 
     public static Specification<Subject> hasClassCode(String classCode) {
         return (root, query, builder) ->
-            classCode == null ? null : builder.equal(root.get("classCode"), classCode);
+            classCode == null ? null : builder.equal(root.get("className"), classCode);
     }
 
     public static Specification<Subject> hasProfessorName(String professorName) {
         return (root, query, builder) ->
-            professorName == null ? null : builder.equal(root.get("professorName"), professorName);
+            professorName == null ? null : builder.equal(root.get("lesnEmp"), professorName);
     }
 }
