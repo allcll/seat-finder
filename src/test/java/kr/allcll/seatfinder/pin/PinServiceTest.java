@@ -1,9 +1,11 @@
 package kr.allcll.seatfinder.pin;
 
+import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import kr.allcll.seatfinder.basket.BasketRepository;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
 import kr.allcll.seatfinder.pin.dto.SubjectIdsResponse;
@@ -31,12 +33,16 @@ class PinServiceTest {
     @Autowired
     private SubjectRepository subjectRepository;
 
+    @Autowired
+    private BasketRepository basketRepository;
+
     private static final String TOKEN = "token";
 
     @BeforeEach
     @Transactional
     void setUp() {
         pinRepository.deleteAllInBatch();
+        basketRepository.deleteAllInBatch();
         subjectRepository.deleteAllInBatch();
     }
 
@@ -167,15 +173,5 @@ class PinServiceTest {
 
         // then
         assertThat(response.subjects()).hasSize(expectedSize);
-    }
-
-    private Subject createSubject(
-        String subjectName,
-        String subjectCode,
-        String classCode,
-        String professorName
-    ) {
-        return new Subject(null, "", "", subjectCode, classCode, subjectName, "", "", "", "", "", "", "", "", "",
-            "", professorName, "", "", "", "", "", "", "");
     }
 }

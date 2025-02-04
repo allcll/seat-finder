@@ -10,4 +10,6 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
     List<Pin> findAllByToken(String tokenId);
 
     Optional<Pin> findBySubjectAndToken(Subject subject, String token);
+
+    boolean existsBySubjectAndToken(Subject subject, String token);
 }

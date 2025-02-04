@@ -5,14 +5,18 @@ import kr.allcll.seatfinder.subject.Subject;
 public class SubjectFixture {
 
     public static Subject createSubject(
-        Long subjectId,
         String subjectName,
         String subjectCode,
         String classCode,
         String professorName
     ) {
-        return new Subject(subjectId, "", "", subjectCode, classCode, subjectName, "", "", "", "", "", "", "", "", "",
-            "", professorName, "", "", "", "", "", "", "");
+        return new Subject("", "", "", "",
+            subjectCode, subjectName,
+            "", "", "", "", "", "", "", "",
+            professorName, "", "", "", "", "",
+            "", "",
+            classCode, "", "", "", "", "",
+            "", "", "", "", "");
     }
 
     public static Subject createNonMajorSubject(
@@ -22,9 +26,15 @@ public class SubjectFixture {
         String classCode,
         String professorName
     ) {
-        return new Subject(subjectId, "대양휴머니티칼리지", "대양휴머니티칼리지", subjectCode, classCode, subjectName, "", "", "", "", "",
+        return new Subject(subjectId,
             "", "", "", "",
-            "", professorName, "", "", "", "", "", "", "");
+            subjectCode, subjectName, "", "", "", "", "", "",
+            "", "",
+            professorName, "", "", "", "", "3210",
+            "",
+            "대양휴머니티칼리지", classCode, "", "", "",
+            "", "", "", "", "",
+            "", "");
     }
 
     public static Subject createMajorSubject(
@@ -34,8 +44,17 @@ public class SubjectFixture {
         String classCode,
         String professorName
     ) {
-        return new Subject(subjectId, "소프트웨어융합대학", "컴퓨터공학과", subjectCode, classCode, subjectName, "", "", "", "", "",
+        return new Subject(subjectId,
             "", "", "", "",
-            "", professorName, "", "", "", "", "", "", "");
+            subjectCode, subjectName, "", "", "", "", "", "",
+            "", "",
+            professorName, "", "", "", "", "3210",
+            "",
+            "컴퓨터공학과", classCode, "", "", "",
+            "", "", "", "", "",
+            "", "");
+//        return new Subject(subjectId, "소프트웨어융합대학", "컴퓨터공학과", subjectCode, classCode, subjectName, "", "", "", "", "",
+//            "", "", "", "",
+//            "", professorName, "", "", "", "", "", "", "", "3210");
     }
 }
