@@ -42,7 +42,7 @@ public class BasketApiTest {
                         "classCode": "001",
                         "professorName": "김보예",
                         "totalCount": 14,
-                        "departmentRegisters": [
+                        "basketsDepartmentRegisters": [
                             {
                                 "studentBelong": "본교생",
                                 "registerDepartment": "전정통",
