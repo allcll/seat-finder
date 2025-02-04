@@ -3,7 +3,7 @@ package kr.allcll.seatfinder.basket.dto;
 import java.util.List;
 
 public record BasketsResponse(
-    List<EachSubjectBasket> baskets
+    List<BasketsEachSubject> baskets
 ) {
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import kr.allcll.seatfinder.basket.Basket;
 import kr.allcll.seatfinder.subject.Subject;
 
-public record EachSubjectBasket(
+public record BasketsEachSubject(
     Long subjectId,
     String subjectName, //과목명
     String departmentName, //개설학과
@@ -13,11 +13,11 @@ public record EachSubjectBasket(
     String classCode, //분반
     String professorName, //교수명
     Integer totalCount, //총 인원
-    List<DepartmentRegisters> departmentRegisters
+    List<BasketsDepartmentRegisters> basketsDepartmentRegisters
 ) {
 
-    public static EachSubjectBasket from(Subject subject, List<Basket> baskets) {
-        return new EachSubjectBasket(
+    public static BasketsEachSubject from(Subject subject, List<Basket> baskets) {
+        return new BasketsEachSubject(
             subject.getId(),
             subject.getCuriNm(),
             subject.getManageDeptNm(),
@@ -26,7 +26,7 @@ public record EachSubjectBasket(
             subject.getClassName(),
             subject.getLesnEmp(),
             baskets.getFirst().getTotRcnt(),
-            DepartmentRegisters.from(baskets)
+            BasketsDepartmentRegisters.from(baskets)
         );
     }
 }

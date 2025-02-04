@@ -64,7 +64,7 @@ class BasketServiceTest {
         BasketsResponse allSubjects = basketService.getAllSubjects();
 
         // then
-        assertThat(allSubjects.baskets().getFirst().departmentRegisters()).hasSize(expectedSize);
+        assertThat(allSubjects.baskets().getFirst().basketsDepartmentRegisters()).hasSize(expectedSize);
     }
 
     private Basket createBasket(

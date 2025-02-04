@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
-import kr.allcll.seatfinder.basket.dto.DepartmentRegisters;
-import kr.allcll.seatfinder.basket.dto.EachSubjectBasket;
+import kr.allcll.seatfinder.basket.dto.BasketsDepartmentRegisters;
+import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,11 +67,11 @@ public class BasketApiTest {
         // when
         when(basketService.getAllSubjects()).thenReturn(
             new BasketsResponse(List.of(
-                new EachSubjectBasket(1L, "컴퓨터구조", "전자정보공학과", "3210", "004310", "001", "김보예", 14,
+                new BasketsEachSubject(1L, "컴퓨터구조", "전자정보공학과", "3210", "004310", "001", "김보예", 14,
                     List.of(
-                        new DepartmentRegisters("본교생", "전정통", 5),
-                        new DepartmentRegisters("타학교학점교환학생", "전정통", 5),
-                        new DepartmentRegisters("본교생", "컴공", 4))
+                        new BasketsDepartmentRegisters("본교생", "전정통", 5),
+                        new BasketsDepartmentRegisters("타학교학점교환학생", "전정통", 5),
+                        new BasketsDepartmentRegisters("본교생", "컴공", 4))
                 )
             ))
         );

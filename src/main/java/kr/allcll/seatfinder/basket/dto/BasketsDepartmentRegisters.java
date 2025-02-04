@@ -3,15 +3,15 @@ package kr.allcll.seatfinder.basket.dto;
 import java.util.List;
 import kr.allcll.seatfinder.basket.Basket;
 
-public record DepartmentRegisters(
+public record BasketsDepartmentRegisters(
     String studentBelong,
     String registerDepartment,
     Integer eachCount
 ) {
 
-    public static List<DepartmentRegisters> from(List<Basket> baskets) {
+    public static List<BasketsDepartmentRegisters> from(List<Basket> baskets) {
         return baskets.stream()
-            .map(basket -> new DepartmentRegisters(
+            .map(basket -> new BasketsDepartmentRegisters(
                 basket.getStudentDivNm(),
                 basket.getStudentDeptCdNm(),
                 basket.getRcnt()))

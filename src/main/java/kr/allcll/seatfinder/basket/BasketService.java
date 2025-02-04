@@ -2,7 +2,7 @@ package kr.allcll.seatfinder.basket;
 
 import java.util.List;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
-import kr.allcll.seatfinder.basket.dto.EachSubjectBasket;
+import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +17,10 @@ public class BasketService {
 
     public BasketsResponse getAllSubjects() {
         List<Subject> subjects = subjectRepository.findAll();
-        List<EachSubjectBasket> result = subjects.stream()
+        List<BasketsEachSubject> result = subjects.stream()
             .map(subject -> {
                 List<Basket> basketsBySubject = basketRepository.findBySubjectId(subject.getId());
-                return EachSubjectBasket.from(subject, basketsBySubject);
+                return BasketsEachSubject.from(subject, basketsBySubject);
             })
             .toList();
         return new BasketsResponse(result);
