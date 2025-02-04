@@ -34,7 +34,7 @@ public class PinService {
         if (userPins.size() >= MAX_PIN_NUMBER) {
             throw new AllcllException(AllcllErrorCode.PIN_LIMIT_EXCEEDED, MAX_PIN_NUMBER);
         }
-        if (pinRepository.findBySubjectAndToken(subject, token).isPresent()) {
+        if (pinRepository.existsBySubjectAndToken(subject, token)) {
             throw new AllcllException(AllcllErrorCode.DUPLICATE_PIN, subject.getCuriNm());
         }
     }
