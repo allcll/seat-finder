@@ -6,9 +6,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import kr.allcll.seatfinder.basket.dto.BasketsResponse;
 import kr.allcll.seatfinder.basket.dto.BasketsDepartmentRegisters;
 import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
+import kr.allcll.seatfinder.basket.dto.BasketsResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class BasketApiTest {
             """;
 
         // when
-        when(basketService.getAllSubjects()).thenReturn(
+        when(basketService.findBasketsByCondition(null, null, null)).thenReturn(
             new BasketsResponse(List.of(
                 new BasketsEachSubject(1L, "컴퓨터구조", "전자정보공학과", "3210", "004310", "001", "김보예", 14,
                     List.of(
@@ -75,7 +75,7 @@ public class BasketApiTest {
                 )
             ))
         );
-        MvcResult result = mockMvc.perform(get("/api/basket")).andExpect(status().isOk()).andReturn();
+        MvcResult result = mockMvc.perform(get("/api/baskets")).andExpect(status().isOk()).andReturn();
 
         // then
         assertThat(result.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);

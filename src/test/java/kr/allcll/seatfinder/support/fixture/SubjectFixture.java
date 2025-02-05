@@ -19,6 +19,22 @@ public class SubjectFixture {
             "", "", "", "", "");
     }
 
+    public static Subject createSubjectWithDepartmentCode(
+        String subjectName,
+        String subjectCode,
+        String classCode,
+        String professorName,
+        String departmentCode
+    ) {
+        return new Subject("", "", "", "",
+            subjectCode, subjectName,
+            "", "", "", "", "", "", "", "",
+            professorName, "", "", "", "", departmentCode,
+            "", "",
+            classCode, "", "", "", "", "",
+            "", "", "", "", "");
+    }
+
     public static Subject createNonMajorSubject(
         Long subjectId,
         String subjectName,
