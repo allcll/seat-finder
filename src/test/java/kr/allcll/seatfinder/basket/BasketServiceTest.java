@@ -72,10 +72,11 @@ class BasketServiceTest {
                 BasketsEachSubject::subjectCode,
                 BasketsEachSubject::classCode,
                 BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentName,
                 BasketsEachSubject::departmentCode
             ).containsExactly(
-                tuple("과목A", "001234", "001", "김수민", "3210"),
-                tuple("과목B", "004321", "002", "김수민", "3211")
+                tuple("과목A", "001234", "001", "김수민", "전자정보통신공학과", "3210"),
+                tuple("과목B", "004321", "002", "김수민", "에너지자원공학과", "3211")
             );
     }
 
@@ -105,9 +106,10 @@ class BasketServiceTest {
                 BasketsEachSubject::subjectCode,
                 BasketsEachSubject::classCode,
                 BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentName,
                 BasketsEachSubject::departmentCode
             ).containsExactly(
-                tuple("과목A", "001234", "001", "김수민", "3210")
+                tuple("과목A", "001234", "001", "김수민", "전자정보통신공학과", "3210")
             );
     }
 
@@ -131,10 +133,11 @@ class BasketServiceTest {
                 BasketsEachSubject::subjectCode,
                 BasketsEachSubject::classCode,
                 BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentName,
                 BasketsEachSubject::departmentCode
             ).containsExactly(
-                tuple("컴공 과목A", "001234", "001", "김보예", "3210"),
-                tuple("컴공 과목B", "004321", "001", "김보예", "3210")
+                tuple("컴공 과목A", "001234", "001", "김보예", "컴퓨터공학과", "3210"),
+                tuple("컴공 과목B", "004321", "001", "김보예", "컴퓨터공학과", "3210")
             );
     }
 
@@ -158,11 +161,12 @@ class BasketServiceTest {
                 BasketsEachSubject::subjectCode,
                 BasketsEachSubject::classCode,
                 BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentName,
                 BasketsEachSubject::departmentCode
             ).containsExactly(
-                tuple("컴공 과목A", "001234", "001", "김보예", "3210"),
-                tuple("컴공 과목B", "004321", "001", "김보예", "3210"),
-                tuple("소웨 과목D", "001234", "001", "김보예", "3211")
+                tuple("컴공 과목A", "001234", "001", "김보예", "컴퓨터공학과", "3210"),
+                tuple("컴공 과목B", "004321", "001", "김보예", "컴퓨터공학과", "3210"),
+                tuple("소웨 과목D", "001234", "001", "김보예", "소프트웨어학과", "3211")
             );
     }
 
@@ -186,9 +190,10 @@ class BasketServiceTest {
                 BasketsEachSubject::subjectCode,
                 BasketsEachSubject::classCode,
                 BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentName,
                 BasketsEachSubject::departmentCode
             ).containsExactly(
-                tuple("컴공 과목A", "001234", "001", "김보예", "3210")
+                tuple("컴공 과목A", "001234", "001", "김보예", "컴퓨터공학과", "3210")
             );
     }
 
@@ -212,9 +217,10 @@ class BasketServiceTest {
                 BasketsEachSubject::subjectCode,
                 BasketsEachSubject::classCode,
                 BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentName,
                 BasketsEachSubject::departmentCode
             ).containsExactly(
-                tuple("컴공 과목A", "001234", "001", "김보예", "3210")
+                tuple("컴공 과목A", "001234", "001", "김보예", "컴퓨터공학과", "3210")
             );
     }
 
@@ -238,9 +244,10 @@ class BasketServiceTest {
                 BasketsEachSubject::subjectCode,
                 BasketsEachSubject::classCode,
                 BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentName,
                 BasketsEachSubject::departmentCode
             ).containsExactly(
-                tuple("컴공 과목A", "001234", "001", "김보예", "3210")
+                tuple("컴공 과목A", "001234", "001", "김보예", "컴퓨터공학과", "3210")
             );
     }
 
@@ -264,9 +271,10 @@ class BasketServiceTest {
                 BasketsEachSubject::subjectCode,
                 BasketsEachSubject::classCode,
                 BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentName,
                 BasketsEachSubject::departmentCode
             ).containsExactly(
-                tuple("컴공 과목B", "004321", "001", "김보예", "3210")
+                tuple("컴공 과목B", "004321", "001", "김보예", "컴퓨터공학과", "3210")
             );
     }
 
