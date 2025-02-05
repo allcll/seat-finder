@@ -2,6 +2,7 @@ package kr.allcll.seatfinder.department;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import kr.allcll.seatfinder.department.dto.DepartmentResponse;
 import kr.allcll.seatfinder.department.dto.DepartmentsResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,5 +38,20 @@ class DepartmentServiceTest {
 
         // then
         assertThat(response.departments()).hasSize(expected);
+    }
+
+    @Test
+    @DisplayName("과목 코드 전체 조회의 응답값을 확인한다.")
+    void retrieveAllDepartmentResponse() {
+        // given
+        departmentRepository.save(new Department("3210", "컴퓨터공학과 소프트웨어융합대학"));
+
+        // when
+        DepartmentsResponse response = departmentService.retrieveAllDepartment();
+
+        // then
+        DepartmentResponse compareResponse = response.departments().getFirst();
+        assertThat(compareResponse.departmentCode()).isEqualTo("3210");
+        assertThat(compareResponse.departmentName()).isEqualTo("컴퓨터공학과 소프트웨어융합대학");
     }
 }

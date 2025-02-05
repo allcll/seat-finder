@@ -245,6 +245,25 @@ class BasketServiceTest {
 
         // then
         assertThat(eachSubjectBaskets.eachDepartmentRegisters()).hasSize(expected);
+
+    }
+
+    @Test
+    @DisplayName("각 과목에 대한 관심과목 조회의 응답값을 확인한다.")
+    public void getEachSubjectBasketResponse() {
+        // given
+        Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
+        subjectRepository.save(subjectA);
+        Basket basketA = createBasket(subjectA, "본교생", "컴공", 10);
+        basketRepository.save(basketA);
+
+        // when
+        SubjectBasketsResponse response = basketService.getEachSubjectBaskets(subjectA.getId());
+
+        // then
+        assertThat(response.eachDepartmentRegisters().getFirst().studentBelong()).isEqualTo("본교생");
+        assertThat(response.eachDepartmentRegisters().getFirst().registerDepartment()).isEqualTo("컴공");
+        assertThat(response.eachDepartmentRegisters().getFirst().eachCount()).isEqualTo(10);
     }
 
     @Test
