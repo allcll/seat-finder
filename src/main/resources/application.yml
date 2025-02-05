@@ -1,35 +1,3 @@
 spring:
-  datasource:
-    driver-class-name: org.h2.Driver
-    url: 'jdbc:h2:mem:test'
-    username: sa
-
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-  #        format_sql: true
-  #        show_sql: true
-
-  mvc:
-    async:
-      request-timeout: 60000 # 60 seconds
-
-logging:
-  level:
-    kr:
-      allcll:
-        seatfinder:
-          sse: debug
-
-app:
-  scheduling:
-    enabled: true
+  profiles:
+    active: local
