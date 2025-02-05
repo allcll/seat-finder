@@ -1,12 +1,14 @@
 package kr.allcll.seatfinder.basket;
 
-import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubject;
 import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithDepartmentCode;
+import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithDepartmentInformation;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
 import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
+import kr.allcll.seatfinder.basket.dto.EachDepartmentBasket;
 import kr.allcll.seatfinder.basket.dto.SubjectBasketsResponse;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
@@ -39,8 +41,22 @@ class BasketServiceTest {
     @DisplayName("전체 관심과목 기능의 정상 동작을 확인한다.")
     void getAllSubjects() {
         // given
-        Subject subjectA = createSubject("과목A", "001234", "001", "3210");
-        Subject subjectB = createSubject("과목B", "004321", "002", "3210");
+        Subject subjectA = createSubjectWithDepartmentInformation(
+            "과목A",
+            "전자정보통신공학과",
+            "3210",
+            "001234",
+            "001",
+            "김수민"
+        );
+        Subject subjectB = createSubjectWithDepartmentInformation(
+            "과목B",
+            "에너지자원공학과",
+            "3211",
+            "004321",
+            "002",
+            "김수민"
+        );
         subjectRepository.saveAll(List.of(subjectA, subjectB));
         basketRepository.save(createBasket(subjectA, "본교생", "전자정보통신공학과", 1));
         basketRepository.save(createBasket(subjectB, "본교생", "에너지자원공학과", 1));
@@ -50,14 +66,31 @@ class BasketServiceTest {
         BasketsResponse allSubjects = basketService.findBasketsByCondition(null, null, null);
 
         // then
-        assertThat(allSubjects.baskets()).hasSize(expectedSize);
+        assertThat(allSubjects.baskets()).hasSize(expectedSize)
+            .extracting(
+                BasketsEachSubject::subjectName,
+                BasketsEachSubject::subjectCode,
+                BasketsEachSubject::classCode,
+                BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentCode
+            ).containsExactly(
+                tuple("과목A", "001234", "001", "김수민", "3210"),
+                tuple("과목B", "004321", "002", "김수민", "3211")
+            );
     }
 
     @Test
     @DisplayName("전체 관심과목 조회를 했을 시 각 과목 조회를 확인한다.")
     void getEachSubject() {
         // given
-        Subject subjectA = createSubject("과목A", "001234", "001", "3210");
+        Subject subjectA = createSubjectWithDepartmentInformation(
+            "과목A",
+            "전자정보통신공학과",
+            "3210",
+            "001234",
+            "001",
+            "김수민"
+        );
         subjectRepository.save(subjectA);
         basketRepository.save(createBasket(subjectA, "본교생", "전자정보통신공학과", 1));
         int expectedSize = 1;
@@ -66,18 +99,16 @@ class BasketServiceTest {
         BasketsResponse allSubjects = basketService.findBasketsByCondition(null, null, null);
 
         // then
-        assertThat(allSubjects.baskets()).hasSize(expectedSize);
-    }
-
-    private Basket createBasket(
-        Subject subject,
-        String studentBelong,
-        String registerDepartment,
-        Integer eachCount
-    ) {
-        return new Basket(subject, "", "", "", "", "", studentBelong,
-            "", registerDepartment, "", "", 200, 0, 0,
-            0, 0, eachCount, 10);
+        assertThat(allSubjects.baskets()).hasSize(expectedSize)
+            .extracting(
+                BasketsEachSubject::subjectName,
+                BasketsEachSubject::subjectCode,
+                BasketsEachSubject::classCode,
+                BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentCode
+            ).containsExactly(
+                tuple("과목A", "001234", "001", "김수민", "3210")
+            );
     }
 
     @Test
@@ -94,7 +125,17 @@ class BasketServiceTest {
             null);
 
         // then
-        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize)
+            .extracting(
+                BasketsEachSubject::subjectName,
+                BasketsEachSubject::subjectCode,
+                BasketsEachSubject::classCode,
+                BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentCode
+            ).containsExactly(
+                tuple("컴공 과목A", "001234", "001", "김보예", "3210"),
+                tuple("컴공 과목B", "004321", "001", "김보예", "3210")
+            );
     }
 
     @Test
@@ -111,7 +152,18 @@ class BasketServiceTest {
             null);
 
         // then
-        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize)
+            .extracting(
+                BasketsEachSubject::subjectName,
+                BasketsEachSubject::subjectCode,
+                BasketsEachSubject::classCode,
+                BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentCode
+            ).containsExactly(
+                tuple("컴공 과목A", "001234", "001", "김보예", "3210"),
+                tuple("컴공 과목B", "004321", "001", "김보예", "3210"),
+                tuple("소웨 과목D", "001234", "001", "김보예", "3211")
+            );
     }
 
     @Test
@@ -128,7 +180,16 @@ class BasketServiceTest {
             "컴공 과목A");
 
         // then
-        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize)
+            .extracting(
+                BasketsEachSubject::subjectName,
+                BasketsEachSubject::subjectCode,
+                BasketsEachSubject::classCode,
+                BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentCode
+            ).containsExactly(
+                tuple("컴공 과목A", "001234", "001", "김보예", "3210")
+            );
     }
 
     @Test
@@ -145,7 +206,16 @@ class BasketServiceTest {
             "컴공 과목A");
 
         // then
-        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize)
+            .extracting(
+                BasketsEachSubject::subjectName,
+                BasketsEachSubject::subjectCode,
+                BasketsEachSubject::classCode,
+                BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentCode
+            ).containsExactly(
+                tuple("컴공 과목A", "001234", "001", "김보예", "3210")
+            );
     }
 
     @Test
@@ -162,7 +232,16 @@ class BasketServiceTest {
             "컴공 과목A");
 
         // then
-        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize)
+            .extracting(
+                BasketsEachSubject::subjectName,
+                BasketsEachSubject::subjectCode,
+                BasketsEachSubject::classCode,
+                BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentCode
+            ).containsExactly(
+                tuple("컴공 과목A", "001234", "001", "김보예", "3210")
+            );
     }
 
     @Test
@@ -179,7 +258,16 @@ class BasketServiceTest {
             "컴공 과목B");
 
         // then
-        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize)
+            .extracting(
+                BasketsEachSubject::subjectName,
+                BasketsEachSubject::subjectCode,
+                BasketsEachSubject::classCode,
+                BasketsEachSubject::professorName,
+                BasketsEachSubject::departmentCode
+            ).containsExactly(
+                tuple("컴공 과목B", "004321", "001", "김보예", "3210")
+            );
     }
 
     @Test
@@ -199,36 +287,6 @@ class BasketServiceTest {
         assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
     }
 
-    private void saveSubjectsAndBaskets() {
-        Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
-        Subject subjectB = createSubjectWithDepartmentCode("컴공 과목B", "004321", "001", "김보예", "3210");
-        Subject subjectC = createSubjectWithDepartmentCode("소웨 과목C", "004321", "001", "김수민", "3211");
-        Subject subjectD = createSubjectWithDepartmentCode("소웨 과목D", "001234", "001", "김보예", "3211");
-        subjectRepository.saveAll(
-            List.of(
-                subjectA,
-                subjectB,
-                subjectC,
-                subjectD
-            )
-        );
-        Basket basketA = createBasket(subjectA, "본교생", "컴공", 10);
-        Basket basketB = createBasket(subjectA, "본교생", "전정통", 3);
-        Basket basketC = createBasket(subjectB, "본교생", "컴공", 4);
-        Basket basketD = createBasket(subjectC, "본교생", "전정통", 5);
-        Basket basketE = createBasket(subjectD, "본교생", "소웨", 6);
-
-        basketRepository.saveAll(
-            List.of(
-                basketA,
-                basketB,
-                basketC,
-                basketD,
-                basketE
-            )
-        );
-    }
-
     @Test
     @DisplayName("각 과목에 대한 관심과목 조회를 확인한다.")
     public void getEachSubjectBasketsTest() {
@@ -245,6 +303,15 @@ class BasketServiceTest {
 
         // then
         assertThat(eachSubjectBaskets.eachDepartmentRegisters()).hasSize(expected);
+        assertThat(eachSubjectBaskets.eachDepartmentRegisters()).hasSize(expected)
+            .extracting(
+                EachDepartmentBasket::studentBelong,
+                EachDepartmentBasket::registerDepartment,
+                EachDepartmentBasket::eachCount
+            ).containsExactly(
+                tuple("본교생", "컴공", 10),
+                tuple("본교생", "전정통", 3)
+            );
 
     }
 
@@ -260,10 +327,15 @@ class BasketServiceTest {
         // when
         SubjectBasketsResponse response = basketService.getEachSubjectBaskets(subjectA.getId());
 
-        // then
-        assertThat(response.eachDepartmentRegisters().getFirst().studentBelong()).isEqualTo("본교생");
-        assertThat(response.eachDepartmentRegisters().getFirst().registerDepartment()).isEqualTo("컴공");
-        assertThat(response.eachDepartmentRegisters().getFirst().eachCount()).isEqualTo(10);
+        // thene
+        assertThat(response.eachDepartmentRegisters()).hasSize(1)
+            .extracting(
+                EachDepartmentBasket::studentBelong,
+                EachDepartmentBasket::registerDepartment,
+                EachDepartmentBasket::eachCount
+            ).containsExactly(
+                tuple("본교생", "컴공", 10)
+            );
     }
 
     @Test
@@ -292,6 +364,79 @@ class BasketServiceTest {
         SubjectBasketsResponse eachSubjectBaskets = basketService.getEachSubjectBaskets(subjectA.getId());
 
         // then
-        System.out.println("eachSubjectBaskets = " + eachSubjectBaskets);
+        assertThat(eachSubjectBaskets.eachDepartmentRegisters().isEmpty()).isTrue();
+    }
+
+    private void saveSubjectsAndBaskets() {
+        Subject subjectA = createSubjectWithDepartmentInformation(
+            "컴공 과목A",
+            "컴퓨터공학과",
+            "3210",
+            "001234",
+            "001",
+            "김보예"
+        );
+
+        Subject subjectB = createSubjectWithDepartmentInformation(
+            "컴공 과목B",
+            "컴퓨터공학과",
+            "3210",
+            "004321",
+            "001",
+            "김보예"
+        );
+
+        Subject subjectC = createSubjectWithDepartmentInformation(
+            "소웨 과목C",
+            "소프트웨어학과",
+            "3211",
+            "004321",
+            "001",
+            "김수민"
+        );
+
+        Subject subjectD = createSubjectWithDepartmentInformation(
+            "소웨 과목D",
+            "소프트웨어학과",
+            "3211",
+            "001234",
+            "001",
+            "김보예"
+        );
+
+        subjectRepository.saveAll(
+            List.of(
+                subjectA,
+                subjectB,
+                subjectC,
+                subjectD
+            )
+        );
+        Basket basketA = createBasket(subjectA, "본교생", "컴공", 10);
+        Basket basketB = createBasket(subjectA, "본교생", "전정통", 3);
+        Basket basketC = createBasket(subjectB, "본교생", "컴공", 4);
+        Basket basketD = createBasket(subjectC, "본교생", "전정통", 5);
+        Basket basketE = createBasket(subjectD, "본교생", "소웨", 6);
+
+        basketRepository.saveAll(
+            List.of(
+                basketA,
+                basketB,
+                basketC,
+                basketD,
+                basketE
+            )
+        );
+    }
+
+    private Basket createBasket(
+        Subject subject,
+        String studentBelong,
+        String registerDepartment,
+        Integer eachCount
+    ) {
+        return new Basket(subject, "", "", "", "", "", studentBelong,
+            "", registerDepartment, "", "", 200, 0, 0,
+            0, 0, eachCount, 10);
     }
 }

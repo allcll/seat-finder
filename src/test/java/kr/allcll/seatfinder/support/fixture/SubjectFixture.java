@@ -35,6 +35,23 @@ public class SubjectFixture {
             "", "", "", "", "");
     }
 
+    public static Subject createSubjectWithDepartmentInformation(
+        String subjectName, //과목명
+        String departmentName, //개설학과
+        String departmentCode, //개설 학과코드
+        String subjectCode, // 학수번호
+        String classCode, //분반
+        String professorName
+    ) {
+        return new Subject("", "", "", "",
+            subjectCode, subjectName,
+            "", "", "", "", "", "", "", "",
+            professorName, "", "", "", "", departmentCode,
+            "", departmentName,
+            classCode, "", "", "", "", "",
+            "", "", "", "", "");
+    }
+
     public static Subject createNonMajorSubject(
         Long subjectId,
         String subjectName,
