@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import kr.allcll.seatfinder.basket.dto.BasketsDepartmentRegisters;
 import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -41,24 +40,7 @@ public class BasketApiTest {
                         "subjectCode": "004310",
                         "classCode": "001",
                         "professorName": "김보예",
-                        "totalCount": 14,
-                        "basketsDepartmentRegisters": [
-                            {
-                                "studentBelong": "본교생",
-                                "registerDepartment": "전정통",
-                                "eachCount": 5
-                            },
-                            {
-                                "studentBelong": "타학교학점교환학생",
-                                "registerDepartment": "전정통",
-                                "eachCount": 5
-                            },
-                            {
-                                "studentBelong": "본교생",
-                                "registerDepartment": "컴공",
-                                "eachCount": 4
-                            }
-                        ]
+                        "totalCount": 14
                     }
                 ]
             }
@@ -67,12 +49,9 @@ public class BasketApiTest {
         // when
         when(basketService.findBasketsByCondition(null, null, null)).thenReturn(
             new BasketsResponse(List.of(
-                new BasketsEachSubject(1L, "컴퓨터구조", "전자정보공학과", "3210", "004310", "001", "김보예", 14,
-                    List.of(
-                        new BasketsDepartmentRegisters("본교생", "전정통", 5),
-                        new BasketsDepartmentRegisters("타학교학점교환학생", "전정통", 5),
-                        new BasketsDepartmentRegisters("본교생", "컴공", 4))
-                )
+                new BasketsEachSubject(1L, "컴퓨터구조",
+                    "전자정보공학과", "3210",
+                    "004310", "001", "김보예", 14)
             ))
         );
         MvcResult result = mockMvc.perform(get("/api/baskets")).andExpect(status().isOk()).andReturn();

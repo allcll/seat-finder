@@ -3,6 +3,9 @@ package kr.allcll.seatfinder.basket;
 import java.util.List;
 import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
+import kr.allcll.seatfinder.basket.dto.SubjectDepartmentRegisters;
+import kr.allcll.seatfinder.exception.AllcllErrorCode;
+import kr.allcll.seatfinder.exception.AllcllException;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import kr.allcll.seatfinder.subject.SubjectSpecifications;
@@ -43,5 +46,12 @@ public class BasketService {
                 .and(SubjectSpecifications.hasProfessorName(professorName))
                 .and(SubjectSpecifications.hasSubjectName(subjectName))
         );
+    }
+
+    public SubjectDepartmentRegisters getEachSubjectBaskets(Long subjectId) {
+        Subject subject = subjectRepository.findById(subjectId)
+            .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
+        List<Basket> baskets = basketRepository.findBySubjectId(subject.getId());
+        return SubjectDepartmentRegisters.from(baskets);
     }
 }

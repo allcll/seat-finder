@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
+import kr.allcll.seatfinder.basket.dto.SubjectDepartmentRegisters;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,14 +59,13 @@ class BasketServiceTest {
         Subject subjectA = createSubject("과목A", "001234", "001", "3210");
         subjectRepository.save(subjectA);
         basketRepository.save(createBasket(subjectA, "본교생", "전자정보통신공학과", 1));
-        basketRepository.save(createBasket(subjectA, "본교생", "컴퓨터공학과", 1));
-        int expectedSize = 2;
+        int expectedSize = 1;
 
         // when
         BasketsResponse allSubjects = basketService.findBasketsByCondition(null, null, null);
 
         // then
-        assertThat(allSubjects.baskets().getFirst().basketsDepartmentRegisters()).hasSize(expectedSize);
+        assertThat(allSubjects.baskets()).hasSize(expectedSize);
     }
 
     private Basket createBasket(
@@ -84,20 +84,16 @@ class BasketServiceTest {
     void departmentCodeSelect() {
         // given
         saveSubject();
-        int expectedSize = 3;
+        int expectedSize = 2;
 
         // when
         BasketsResponse basketsByCondition = basketService.findBasketsByCondition(
             "3210",
             null,
             null);
-        int result = basketsByCondition.baskets().stream().mapToInt(
-                basket -> basket.basketsDepartmentRegisters().size()
-            )
-            .sum();
 
         // then
-        assertThat(result).isEqualTo(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
     }
 
     @Test
@@ -105,20 +101,16 @@ class BasketServiceTest {
     void professorSelect() {
         // given
         saveSubject();
-        int expectedSize = 4;
+        int expectedSize = 3;
 
         // when
         BasketsResponse basketsByCondition = basketService.findBasketsByCondition(
             null,
             "김보예",
             null);
-        int result = basketsByCondition.baskets().stream().mapToInt(
-                basket -> basket.basketsDepartmentRegisters().size()
-            )
-            .sum();
 
         // then
-        assertThat(result).isEqualTo(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
     }
 
     @Test
@@ -126,20 +118,16 @@ class BasketServiceTest {
     void subjectNameSelect() {
         // given
         saveSubject();
-        int expectedSize = 2;
+        int expectedSize = 1;
 
         // when
         BasketsResponse basketsByCondition = basketService.findBasketsByCondition(
             null,
             null,
             "컴공 과목A");
-        int result = basketsByCondition.baskets().stream().mapToInt(
-                basket -> basket.basketsDepartmentRegisters().size()
-            )
-            .sum();
 
         // then
-        assertThat(result).isEqualTo(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
     }
 
     @Test
@@ -147,20 +135,16 @@ class BasketServiceTest {
     void subjectNameAndProfessorSelect() {
         // given
         saveSubject();
-        int expectedSize = 2;
+        int expectedSize = 1;
 
         // when
         BasketsResponse basketsByCondition = basketService.findBasketsByCondition(
             null,
             "김보예",
             "컴공 과목A");
-        int result = basketsByCondition.baskets().stream().mapToInt(
-                basket -> basket.basketsDepartmentRegisters().size()
-            )
-            .sum();
 
         // then
-        assertThat(result).isEqualTo(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
     }
 
     @Test
@@ -168,20 +152,16 @@ class BasketServiceTest {
     void subjectNameAndDepartmentCodeSelect() {
         // given
         saveSubject();
-        int expectedSize = 2;
+        int expectedSize = 1;
 
         // when
         BasketsResponse basketsByCondition = basketService.findBasketsByCondition(
             "3210",
             null,
             "컴공 과목A");
-        int result = basketsByCondition.baskets().stream().mapToInt(
-                basket -> basket.basketsDepartmentRegisters().size()
-            )
-            .sum();
 
         // then
-        assertThat(result).isEqualTo(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
     }
 
     @Test
@@ -196,13 +176,9 @@ class BasketServiceTest {
             "3210",
             "김보예",
             "컴공 과목B");
-        int result = basketsByCondition.baskets().stream().mapToInt(
-                basket -> basket.basketsDepartmentRegisters().size()
-            )
-            .sum();
 
         // then
-        assertThat(result).isEqualTo(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
     }
 
     @Test
@@ -217,13 +193,9 @@ class BasketServiceTest {
             "3211",
             "김보예",
             "컴공 과목B");
-        int result = basketsByCondition.baskets().stream().mapToInt(
-                basket -> basket.basketsDepartmentRegisters().size()
-            )
-            .sum();
 
         // then
-        assertThat(result).isEqualTo(expectedSize);
+        assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
     }
 
     private void saveSubject() {
@@ -254,5 +226,23 @@ class BasketServiceTest {
                 basketE
             )
         );
+    }
+
+    @Test
+    @DisplayName("각 과목에 대한 관심과목 조회를 확인한다.")
+    public void getEachSubjectBasketsTest() {
+        // given
+        Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
+        subjectRepository.save(subjectA);
+        Basket basketA = createBasket(subjectA, "본교생", "컴공", 10);
+        Basket basketB = createBasket(subjectA, "본교생", "전정통", 3);
+        basketRepository.saveAll(List.of(basketA, basketB));
+        int expected = 2;
+
+        // when
+        SubjectDepartmentRegisters eachSubjectBaskets = basketService.getEachSubjectBaskets(subjectA.getId());
+
+        // then
+        assertThat(eachSubjectBaskets.basketsDepartmentRegisters()).hasSize(expected);
     }
 }
