@@ -61,4 +61,4 @@ jobs:
           sudo nohup java -Dspring.profiles.active=dev \
           -Duser.timezone=Asia/Seoul \
           -Dlogging.file.path=/home/ubuntu/app/logs \
-          -jar /home/ubuntu/app/server.jar > /home/ubuntu/app/logs/app.log 2>&1 & 
+          -jar /home/ubuntu/app/server.jar & 
