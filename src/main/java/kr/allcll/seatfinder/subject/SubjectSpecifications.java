@@ -28,4 +28,9 @@ public class SubjectSpecifications {
         return (root, query, builder) ->
             professorName == null ? null : builder.equal(root.get("lesnEmp"), professorName);
     }
+
+    public static Specification<Subject> hasDepartmentCode(String departmentCode) {
+        return ((root, query, builder) ->
+            departmentCode == null ? null : builder.equal(root.get("deptCd"), departmentCode));
+    }
 }
