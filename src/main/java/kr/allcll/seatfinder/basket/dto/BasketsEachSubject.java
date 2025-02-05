@@ -12,11 +12,22 @@ public record BasketsEachSubject(
     String subjectCode, // 학수번호
     String classCode, //분반
     String professorName, //교수명
-    Integer totalCount, //총 인원
-    List<BasketsDepartmentRegisters> basketsDepartmentRegisters
+    Integer totalCount //총 인원
 ) {
 
     public static BasketsEachSubject from(Subject subject, List<Basket> baskets) {
+        if (baskets.isEmpty()) {
+            return new BasketsEachSubject(
+                subject.getId(),
+                subject.getCuriNm(),
+                subject.getManageDeptNm(),
+                subject.getDeptCd(),
+                subject.getCuriNo(),
+                subject.getClassName(),
+                subject.getLesnEmp(),
+                0
+            );
+        }
         return new BasketsEachSubject(
             subject.getId(),
             subject.getCuriNm(),
@@ -25,8 +36,7 @@ public record BasketsEachSubject(
             subject.getCuriNo(),
             subject.getClassName(),
             subject.getLesnEmp(),
-            baskets.getFirst().getTotRcnt(),
-            BasketsDepartmentRegisters.from(baskets)
+            baskets.getFirst().getTotRcnt()
         );
     }
 }
