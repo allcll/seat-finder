@@ -54,7 +54,11 @@ jobs:
 
       - name: Run Application
         run: |
+          echo "Creating logs directory..."
+          mkdir -p /home/ubuntu/app/logs
+          
           echo "Starting new application..."
           sudo nohup java -Dspring.profiles.active=dev \
-          -Duser.timezone=Asia/Seoul -jar /home/ubuntu/app/server.jar \
-          > /home/ubuntu/app/server.log 2>&1 &
+          -Duser.timezone=Asia/Seoul \
+          -Dlogging.file.path=/home/ubuntu/app/logs \
+          -jar /home/ubuntu/app/server.jar & 
