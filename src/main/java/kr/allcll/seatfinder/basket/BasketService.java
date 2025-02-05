@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
-import kr.allcll.seatfinder.basket.dto.SubjectDepartmentRegisters;
+import kr.allcll.seatfinder.basket.dto.SubjectBasketsResponse;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
 import kr.allcll.seatfinder.subject.Subject;
@@ -36,10 +36,6 @@ public class BasketService {
         List<BasketsEachSubject> result = new ArrayList<>();
         for (Subject subject : subjects) {
             List<Basket> baskets = basketRepository.findBySubjectId(subject.getId());
-            if (baskets.isEmpty()) {
-                result.add(BasketsEachSubject.fromEmptyBasket(subject));
-                continue;
-            }
             result.add(BasketsEachSubject.from(subject, baskets));
         }
         return result;
@@ -57,10 +53,10 @@ public class BasketService {
         );
     }
 
-    public SubjectDepartmentRegisters getEachSubjectBaskets(Long subjectId) {
+    public SubjectBasketsResponse getEachSubjectBaskets(Long subjectId) {
         Subject subject = subjectRepository.findById(subjectId)
             .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
         List<Basket> baskets = basketRepository.findBySubjectId(subject.getId());
-        return SubjectDepartmentRegisters.from(baskets);
+        return SubjectBasketsResponse.from(baskets);
     }
 }

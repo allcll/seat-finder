@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
-import kr.allcll.seatfinder.basket.dto.SubjectDepartmentRegisters;
+import kr.allcll.seatfinder.basket.dto.SubjectBasketsResponse;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -241,10 +241,10 @@ class BasketServiceTest {
         int expected = 2;
 
         // when
-        SubjectDepartmentRegisters eachSubjectBaskets = basketService.getEachSubjectBaskets(subjectA.getId());
+        SubjectBasketsResponse eachSubjectBaskets = basketService.getEachSubjectBaskets(subjectA.getId());
 
         // then
-        assertThat(eachSubjectBaskets.basketsDepartmentRegisters()).hasSize(expected);
+        assertThat(eachSubjectBaskets.eachDepartmentRegisters()).hasSize(expected);
     }
 
     @Test
@@ -270,7 +270,7 @@ class BasketServiceTest {
         subjectRepository.save(subjectA);
 
         // when
-        SubjectDepartmentRegisters eachSubjectBaskets = basketService.getEachSubjectBaskets(subjectA.getId());
+        SubjectBasketsResponse eachSubjectBaskets = basketService.getEachSubjectBaskets(subjectA.getId());
 
         // then
         System.out.println("eachSubjectBaskets = " + eachSubjectBaskets);

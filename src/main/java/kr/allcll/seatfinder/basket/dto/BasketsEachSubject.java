@@ -16,6 +16,18 @@ public record BasketsEachSubject(
 ) {
 
     public static BasketsEachSubject from(Subject subject, List<Basket> baskets) {
+        if (baskets.isEmpty()) {
+            return new BasketsEachSubject(
+                subject.getId(),
+                subject.getCuriNm(),
+                subject.getManageDeptNm(),
+                subject.getDeptCd(),
+                subject.getCuriNo(),
+                subject.getClassName(),
+                subject.getLesnEmp(),
+                0
+            );
+        }
         return new BasketsEachSubject(
             subject.getId(),
             subject.getCuriNm(),
@@ -25,19 +37,6 @@ public record BasketsEachSubject(
             subject.getClassName(),
             subject.getLesnEmp(),
             baskets.getFirst().getTotRcnt()
-        );
-    }
-
-    public static BasketsEachSubject fromEmptyBasket(Subject subject) {
-        return new BasketsEachSubject(
-            subject.getId(),
-            subject.getCuriNm(),
-            subject.getManageDeptNm(),
-            subject.getDeptCd(),
-            subject.getCuriNo(),
-            subject.getClassName(),
-            subject.getLesnEmp(),
-            0
         );
     }
 }

@@ -1,7 +1,7 @@
 package kr.allcll.seatfinder.basket;
 
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
-import kr.allcll.seatfinder.basket.dto.SubjectDepartmentRegisters;
+import kr.allcll.seatfinder.basket.dto.SubjectBasketsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +30,8 @@ public class BasketApi {
     }
 
     @GetMapping("/api/baskets/{subjectId}")
-    public ResponseEntity<SubjectDepartmentRegisters> getEachSubjectBaskets(@PathVariable Long subjectId) {
-        SubjectDepartmentRegisters response = basketService.getEachSubjectBaskets(subjectId);
+    public ResponseEntity<SubjectBasketsResponse> getEachSubjectBaskets(@PathVariable Long subjectId) {
+        SubjectBasketsResponse response = basketService.getEachSubjectBaskets(subjectId);
         return ResponseEntity.ok(response);
     }
 }
