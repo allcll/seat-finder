@@ -11,14 +11,14 @@
       <!-- 날짜, 시간, 로그 레벨, 스레드 이름, 로거 이름, 메시지 형식 -->
       <pattern>${LOG_PATTERN}</pattern>
     </encoder>
-    <file>logs/spring-boot-application-error.log</file>
+    <file>${LOG_PATH}/spring-boot-application-error.log</file>
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <level>ERROR</level>
       <onMatch>ACCEPT</onMatch>
       <onMismatch>DENY</onMismatch>
     </filter>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>logs/spring-boot-application-error.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <fileNamePattern>${LOG_PATH}/spring-boot-application-error.%d{yyyy-MM-dd}.log</fileNamePattern>
       <maxHistory>30</maxHistory>
     </rollingPolicy>
   </appender>
@@ -28,14 +28,14 @@
       <!-- 날짜, 시간, 로그 레벨, 스레드 이름, 로거 이름, 메시지 형식 -->
       <pattern>${LOG_PATTERN}</pattern>
     </encoder>
-    <file>logs/spring-boot-application-warn.log</file>
+    <file>${LOG_PATH}/spring-boot-application-warn.log</file>
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <level>WARN</level>
       <onMatch>ACCEPT</onMatch>
       <onMismatch>DENY</onMismatch>
     </filter>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>logs/spring-boot-application-warn.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <fileNamePattern>${LOG_PATH}/spring-boot-application-warn.%d{yyyy-MM-dd}.log</fileNamePattern>
       <maxHistory>30</maxHistory>
     </rollingPolicy>
   </appender>
@@ -45,14 +45,14 @@
       <!-- 날짜, 시간, 로그 레벨, 스레드 이름, 로거 이름, 메시지 형식 -->
       <pattern>${LOG_PATTERN}</pattern>
     </encoder>
-    <file>logs/spring-boot-application-info.log</file>
+    <file>${LOG_PATH}/spring-boot-application-info.log</file>
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <level>INFO</level>
       <onMatch>ACCEPT</onMatch>
       <onMismatch>DENY</onMismatch>
     </filter>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>logs/spring-boot-application-info.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <fileNamePattern>${LOG_PATH}/spring-boot-application-info.%d{yyyy-MM-dd}.log</fileNamePattern>
       <maxHistory>30</maxHistory>
     </rollingPolicy>
   </appender>
@@ -62,14 +62,14 @@
       <!-- 날짜, 시간, 로그 레벨, 스레드 이름, 로거 이름, 메시지 형식 -->
       <pattern>${LOG_PATTERN}</pattern>
     </encoder>
-    <file>logs/spring-boot-application-debug.log</file>
+    <file>${LOG_PATH}/spring-boot-application-debug.log</file>
     <filter class="ch.qos.logback.classic.filter.LevelFilter">
       <level>DEBUG</level>
       <onMatch>ACCEPT</onMatch>
       <onMismatch>DENY</onMismatch>
     </filter>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>logs/spring-boot-application-debug.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <fileNamePattern>${LOG_PATH}/spring-boot-application-debug.%d{yyyy-MM-dd}.log</fileNamePattern>
       <maxHistory>30</maxHistory>
     </rollingPolicy>
   </appender>
@@ -80,6 +80,7 @@
   <!-- log 변수 값 설정 -->
   <property name="LOG_PATTERN"
     value="[%d{yyyy-MM-dd HH:mm:ss}:%-3relative]  %clr(%-5level) %clr(${PID:-}){magenta} %clr(---){faint} %clr([%15.15thread]){faint} %clr(%-40.40logger{36}){cyan} %clr(:){faint} %msg%n"/>
+  <property name="LOG_PATH" value="${LOG_PATH:-/home/ubuntu/app/logs}"/>
 
   <springProfile name="default">
     <root level="INFO">
