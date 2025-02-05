@@ -5,6 +5,7 @@ import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectW
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
 import kr.allcll.seatfinder.basket.dto.SubjectDepartmentRegisters;
 import kr.allcll.seatfinder.subject.Subject;
@@ -244,5 +245,34 @@ class BasketServiceTest {
 
         // then
         assertThat(eachSubjectBaskets.basketsDepartmentRegisters()).hasSize(expected);
+    }
+
+    @Test
+    @DisplayName("관심과목 인원이 0명 일 때의 동작을 확인한다.")
+    public void emptyBasket() {
+        // given
+        Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
+        subjectRepository.save(subjectA);
+
+        // when
+        BasketsResponse basketsByCondition = basketService.findBasketsByCondition(null, null, null);
+
+        //then
+        List<BasketsEachSubject> baskets = basketsByCondition.baskets();
+        assertThat(baskets.getFirst().totalCount()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("관심과목 인원이 0명 일 때 과목 조회를 확인한다.")
+    public void emptyBasketSubject() {
+        // given
+        Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
+        subjectRepository.save(subjectA);
+
+        // when
+        SubjectDepartmentRegisters eachSubjectBaskets = basketService.getEachSubjectBaskets(subjectA.getId());
+
+        // then
+        System.out.println("eachSubjectBaskets = " + eachSubjectBaskets);
     }
 }

@@ -1,5 +1,6 @@
 package kr.allcll.seatfinder.basket;
 
+import java.util.ArrayList;
 import java.util.List;
 import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
@@ -27,13 +28,21 @@ public class BasketService {
     ) {
         Specification<Subject> condition = getCondition(departmentCode, professorName, subjectName);
         List<Subject> subjects = subjectRepository.findAll(condition);
-        List<BasketsEachSubject> result = subjects.stream()
-            .map(subject -> {
-                List<Basket> basketsBySubject = basketRepository.findBySubjectId(subject.getId());
-                return BasketsEachSubject.from(subject, basketsBySubject);
-            })
-            .toList();
+        List<BasketsEachSubject> result = getBasketsEachSubject(subjects);
         return new BasketsResponse(result);
+    }
+
+    private List<BasketsEachSubject> getBasketsEachSubject(List<Subject> subjects) {
+        List<BasketsEachSubject> result = new ArrayList<>();
+        for (Subject subject : subjects) {
+            List<Basket> baskets = basketRepository.findBySubjectId(subject.getId());
+            if (baskets.isEmpty()) {
+                result.add(BasketsEachSubject.fromEmptyBasket(subject));
+                continue;
+            }
+            result.add(BasketsEachSubject.from(subject, baskets));
+        }
+        return result;
     }
 
     private Specification<Subject> getCondition(
