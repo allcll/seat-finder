@@ -84,7 +84,7 @@ class BasketServiceTest {
     @DisplayName("학과 코드로 검색했을 시 관심 과목 조회를 확인한다.")
     void departmentCodeSelect() {
         // given
-        saveSubject();
+        saveSubjectsAndBaskets();
         int expectedSize = 2;
 
         // when
@@ -101,7 +101,7 @@ class BasketServiceTest {
     @DisplayName("교수명으로 검색했을 시 관심 과목 조회를 확인한다.")
     void professorSelect() {
         // given
-        saveSubject();
+        saveSubjectsAndBaskets();
         int expectedSize = 3;
 
         // when
@@ -118,7 +118,7 @@ class BasketServiceTest {
     @DisplayName("과목명으로 검색했을 시 관심 과목 조회를 확인한다.")
     void subjectNameSelect() {
         // given
-        saveSubject();
+        saveSubjectsAndBaskets();
         int expectedSize = 1;
 
         // when
@@ -135,7 +135,7 @@ class BasketServiceTest {
     @DisplayName("과목명과 교수명으로 검색했을 시 관심 과목 조회를 확인한다.")
     void subjectNameAndProfessorSelect() {
         // given
-        saveSubject();
+        saveSubjectsAndBaskets();
         int expectedSize = 1;
 
         // when
@@ -152,7 +152,7 @@ class BasketServiceTest {
     @DisplayName("과목명과 학과코드로 검색했을 시 관심 과목 조회를 확인한다.")
     void subjectNameAndDepartmentCodeSelect() {
         // given
-        saveSubject();
+        saveSubjectsAndBaskets();
         int expectedSize = 1;
 
         // when
@@ -169,7 +169,7 @@ class BasketServiceTest {
     @DisplayName("과목명과 학과코드와 교수명으로 검색했을 시 관심 과목 조회를 확인한다.")
     void subjectNameAndDepartmentCodeAndProfessorNameSelect() {
         // given
-        saveSubject();
+        saveSubjectsAndBaskets();
         int expectedSize = 1;
 
         // when
@@ -186,7 +186,7 @@ class BasketServiceTest {
     @DisplayName("잘못된 조건으로 검색 시 아무것도 조회되지 않음을 확인한다.")
     void wrongSelect() {
         // given
-        saveSubject();
+        saveSubjectsAndBaskets();
         int expectedSize = 0;
 
         // when
@@ -199,7 +199,7 @@ class BasketServiceTest {
         assertThat(basketsByCondition.baskets()).hasSize(expectedSize);
     }
 
-    private void saveSubject() {
+    private void saveSubjectsAndBaskets() {
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         Subject subjectB = createSubjectWithDepartmentCode("컴공 과목B", "004321", "001", "김보예", "3210");
         Subject subjectC = createSubjectWithDepartmentCode("소웨 과목C", "004321", "001", "김수민", "3211");
