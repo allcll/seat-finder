@@ -59,6 +59,7 @@ jobs:
           
           echo "Starting new application..."
           sudo nohup java -Dspring.profiles.active=dev \
+          -Dspring.config.location=/home/ubuntu/app/application-dev.yml \
           -Duser.timezone=Asia/Seoul \
           -Dlogging.file.path=/home/ubuntu/app/logs \
           -jar /home/ubuntu/app/server.jar & 
