@@ -12,7 +12,7 @@ public class DepartmentApi {
 
     private final DepartmentService departmentService;
 
-    @GetMapping("/api/department-codes")
+    @GetMapping("/api/departments")
     public ResponseEntity<DepartmentsResponse> retrieveAllDepartment() {
         DepartmentsResponse response = departmentService.retrieveAllDepartment();
         return ResponseEntity.ok(response);
