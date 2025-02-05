@@ -53,7 +53,7 @@ class DepartmentApiTest {
                 )
             )
         );
-        MvcResult result = mockMvc.perform(get("/api/department-codes")).andExpect(status().isOk()).andReturn();
+        MvcResult result = mockMvc.perform(get("/api/departments")).andExpect(status().isOk()).andReturn();
 
         // then
         assertThat(result.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);
