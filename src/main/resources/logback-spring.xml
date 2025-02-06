@@ -88,6 +88,12 @@
     </root>
   </springProfile>
 
+  <springProfile name="local">
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+
   <springProfile name="dev">
     <root level="INFO">
       <appender-ref ref="ERROR-ROLLING"/>
