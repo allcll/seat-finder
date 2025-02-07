@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class StarService {
 
-    private static final int MAX_PIN_NUMBER = 5;
+    private static final int MAX_STAR_NUMBER = 10;
 
     private final StarRepository starRepository;
     private final SubjectRepository subjectRepository;
@@ -29,8 +29,8 @@ public class StarService {
     }
 
     private void validateCanAddStar(List<Star> userStars, Subject subject, String token) {
-        if (userStars.size() >= MAX_PIN_NUMBER) {
-            throw new AllcllException(AllcllErrorCode.STAR_LIMIT_EXCEEDED, MAX_PIN_NUMBER);
+        if (userStars.size() >= MAX_STAR_NUMBER) {
+            throw new AllcllException(AllcllErrorCode.STAR_LIMIT_EXCEEDED, MAX_STAR_NUMBER);
         }
         if (starRepository.existsBySubjectAndToken(subject, token)) {
             throw new AllcllException(AllcllErrorCode.DUPLICATE_STAR, subject.getCuriNm());

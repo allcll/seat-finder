@@ -19,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class StarServiceTest {
 
-    private static final int MAX_STAR_NUMBER = 5;
+    private static final int MAX_STAR_NUMBER = 10;
     private static final String TOKEN = "token";
 
     @Autowired
