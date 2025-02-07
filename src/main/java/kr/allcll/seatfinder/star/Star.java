@@ -29,4 +29,9 @@ public class Star {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "subject_id", nullable = false)
     private Subject subject;
+
+    public Star(String token, Subject subject) {
+        this.token = token;
+        this.subject = subject;
+    }
 }
