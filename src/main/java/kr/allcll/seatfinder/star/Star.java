@@ -23,7 +23,7 @@ public class Star {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "token")
+    @Column(name = "token", nullable = false)
     private String token;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
