@@ -42,19 +42,37 @@ class StarServiceTest {
     @DisplayName("즐겨찾기 5개 미만일 경우 정상 등록을 검증한다.")
     void addStarOnProject() {
         // given
+        int expected = 5;
         Subject subjectA = createSubject("컴퓨터구조", "003278", "001", "김보예");
-        subjectRepository.save(subjectA);
-        starService.addStarOnSubject(subjectA.getId(), TOKEN);
+        Subject subjectB = createSubject("컴퓨터구조", "003278", "002", "김보예");
+        Subject subjectC = createSubject("컴퓨터구조", "003278", "003", "김보예");
+        Subject subjectD = createSubject("컴퓨터구조", "003278", "004", "김보예");
+        Subject starSubject = createSubject("컴퓨터구조", "003278", "005", "김보예");
+        subjectRepository.saveAll(List.of(
+            subjectA,
+            subjectB,
+            subjectC,
+            subjectD,
+            starSubject
+        ));
+        starRepository.saveAll(List.of(
+                new Star(TOKEN, subjectA),
+                new Star(TOKEN, subjectB),
+                new Star(TOKEN, subjectC),
+                new Star(TOKEN, subjectD)
+            )
+        );
+        starService.addStarOnSubject(starSubject.getId(), TOKEN);
 
         // when
         List<Star> result = starRepository.findAllByToken(TOKEN);
 
         // then
-        assertThat(result).hasSize(1);
+        assertThat(result).hasSize(expected);
     }
 
     @Test
-    @DisplayName("즐겨찾기가 5개 이상일 경우 예외를 검증한다.")
+    @DisplayName("즐겨찾기가 10개 이상일 경우 예외를 검증한다.")
     void canNotAddStarOnSubject() {
         // given
         Subject overCountSubject = createSubject("컴퓨터구조", "003278", "005", "김수민");
