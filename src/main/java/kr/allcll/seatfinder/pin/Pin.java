@@ -15,7 +15,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "PIN")
+@Table(name = "pins")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
