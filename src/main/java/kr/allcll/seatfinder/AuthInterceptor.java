@@ -4,9 +4,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import kr.allcll.seatfinder.exception.AllcllErrorCode;
+import kr.allcll.seatfinder.exception.AllcllException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
@@ -16,19 +17,13 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (hasNoToken(request)) {
-            ThreadLocalHolder.SHARED_TOKEN.set(TokenProvider.create());
+            String token = TokenProvider.create();
+            ThreadLocalHolder.SHARED_TOKEN.set(token);
+            response.addCookie(new Cookie(TOKEN_KEY, token));
             return true;
         }
         ThreadLocalHolder.SHARED_TOKEN.set(findTokenFromCookie(request));
         return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-        ModelAndView modelAndView) {
-        if (hasNoToken(request)) {
-            response.addCookie(new Cookie(TOKEN_KEY, ThreadLocalHolder.SHARED_TOKEN.get()));
-        }
     }
 
     private boolean hasNoToken(HttpServletRequest request) {
@@ -43,7 +38,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         return Arrays.stream(request.getCookies())
             .filter(cookie -> TOKEN_KEY.equals(cookie.getName()))
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("쿠키에 토큰이 존재하지 않습니다."))
+            .orElseThrow(() -> new AllcllException(AllcllErrorCode.TOKEN_NOT_FOUND))
             .getValue();
     }
 }
