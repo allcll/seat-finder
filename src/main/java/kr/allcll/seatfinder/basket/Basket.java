@@ -102,4 +102,12 @@ public class Basket extends BaseEntity {
         this.rcnt = rcnt;
         this.totRcnt = totRcnt;
     }
+
+    public boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
+    public boolean isEmpty() {
+        return this.rcnt == null || this.rcnt == 0;
+    }
 }

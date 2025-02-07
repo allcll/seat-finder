@@ -1,5 +1,6 @@
 package kr.allcll.seatfinder.basket;
 
+import static kr.allcll.seatfinder.support.fixture.BasketFixture.createEmptyBasket;
 import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithDepartmentCode;
 import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithDepartmentInformation;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -344,6 +345,22 @@ class BasketServiceTest {
             ).containsExactly(
                 tuple("본교생", "컴공", 10)
             );
+    }
+
+    @Test
+    @DisplayName("과목에 대한 관심과목 담기한 인원이 없을 때는 빈 응답을 반환한다.")
+    public void emptyBasketResponse() {
+        // given
+        Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
+        subjectRepository.save(subjectA);
+        Basket emptyBasket = createEmptyBasket(subjectA);
+        basketRepository.save(emptyBasket);
+
+        // when
+        SubjectBasketsResponse response = basketService.getEachSubjectBaskets(subjectA.getId());
+
+        // then
+        assertThat(response.eachDepartmentRegisters()).isEmpty();
     }
 
     @Test
