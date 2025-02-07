@@ -17,8 +17,9 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (hasNoToken(request)) {
-            ThreadLocalHolder.SHARED_TOKEN.set(TokenProvider.create());
-            response.addCookie(new Cookie(TOKEN_KEY, ThreadLocalHolder.SHARED_TOKEN.get()));
+            String token = TokenProvider.create();
+            ThreadLocalHolder.SHARED_TOKEN.set(token);
+            response.addCookie(new Cookie(TOKEN_KEY, token));
             return true;
         }
         ThreadLocalHolder.SHARED_TOKEN.set(findTokenFromCookie(request));
