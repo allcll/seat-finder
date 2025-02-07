@@ -23,15 +23,15 @@ public class PinService {
 
     @Transactional
     public void addPinOnSubject(Long subjectId, String token) {
-        List<Pin> userPins = pinRepository.findAllByToken(token);
+        Long pinCount = pinRepository.countAllByToken(token);
         Subject subject = subjectRepository.findById(subjectId)
             .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
-        validateCanAddPin(userPins, subject, token);
+        validateCanAddPin(pinCount, subject, token);
         pinRepository.save(new Pin(token, subject));
     }
 
-    private void validateCanAddPin(List<Pin> userPins, Subject subject, String token) {
-        if (userPins.size() >= MAX_PIN_NUMBER) {
+    private void validateCanAddPin(Long pinCount, Subject subject, String token) {
+        if (pinCount >= MAX_PIN_NUMBER) {
             throw new AllcllException(AllcllErrorCode.PIN_LIMIT_EXCEEDED, MAX_PIN_NUMBER);
         }
         if (pinRepository.existsBySubjectAndToken(subject, token)) {
