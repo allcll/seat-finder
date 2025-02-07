@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import kr.allcll.seatfinder.basket.dto.BasketsEachSubject;
 import kr.allcll.seatfinder.basket.dto.BasketsResponse;
+import kr.allcll.seatfinder.basket.dto.EachDepartmentBasket;
+import kr.allcll.seatfinder.basket.dto.SubjectBasketsResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,52 @@ public class BasketApiTest {
             ))
         );
         MvcResult result = mockMvc.perform(get("/api/baskets")).andExpect(status().isOk()).andReturn();
+
+        // then
+        assertThat(result.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);
+    }
+
+    @Test
+    @DisplayName("특정 관심과목 조회의 요청과 응답을 확인한다.")
+    void findBasket() throws Exception {
+        // given
+        String expected = """
+            {
+                "eachDepartmentRegisters": [
+                    {
+                        "studentBelong": "본교생",
+                        "registerDepartment": "컴퓨터공학과",
+                        "eachCount": 10
+                    }
+                ]
+            }
+            """;
+
+        // when
+        when(basketService.getEachSubjectBaskets(1L)).thenReturn(
+            new SubjectBasketsResponse(List.of(
+                new EachDepartmentBasket("본교생", "컴퓨터공학과", 10)
+            ))
+        );
+        MvcResult result = mockMvc.perform(get("/api/baskets/1")).andExpect(status().isOk()).andReturn();
+
+        // then
+        assertThat(result.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);
+    }
+
+    @Test
+    @DisplayName("관심과목으로 등록한 학생이 없으면, 관심과목 조회에 빈 응답을 확인한다.")
+    void findBasketEmpty() throws Exception {
+        // given
+        String expected = """
+            {
+                "eachDepartmentRegisters": []
+            }
+            """;
+
+        // when
+        when(basketService.getEachSubjectBaskets(1L)).thenReturn(new SubjectBasketsResponse(List.of()));
+        MvcResult result = mockMvc.perform(get("/api/baskets/1")).andExpect(status().isOk()).andReturn();
 
         // then
         assertThat(result.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);
