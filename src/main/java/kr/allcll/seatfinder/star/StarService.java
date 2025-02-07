@@ -23,15 +23,15 @@ public class StarService {
 
     @Transactional
     public void addStarOnSubject(Long subjectId, String token) {
-        List<Star> starsByToken = starRepository.findAllByToken(token);
+        Long starCount = starRepository.countAllByToken(token);
         Subject subject = subjectRepository.findById(subjectId)
             .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
-        validateCanAddStar(starsByToken, subject, token);
+        validateCanAddStar(starCount, subject, token);
         starRepository.save(new Star(token, subject));
     }
 
-    private void validateCanAddStar(List<Star> userStars, Subject subject, String token) {
-        if (userStars.size() >= MAX_STAR_NUMBER) {
+    private void validateCanAddStar(Long starCount, Subject subject, String token) {
+        if (starCount >= MAX_STAR_NUMBER) {
             throw new AllcllException(AllcllErrorCode.STAR_LIMIT_EXCEEDED, MAX_STAR_NUMBER);
         }
         if (starRepository.existsBySubjectAndToken(subject, token)) {

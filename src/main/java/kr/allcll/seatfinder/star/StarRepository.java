@@ -12,4 +12,6 @@ public interface StarRepository extends JpaRepository<Star, Long> {
     List<Star> findAllByToken(String token);
 
     Optional<Star> findBySubjectAndToken(Subject subject, String token);
+
+    Long countAllByToken(String token);
 }
