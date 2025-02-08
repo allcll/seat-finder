@@ -57,7 +57,7 @@ public class BasketService {
         Subject subject = subjectRepository.findById(subjectId)
             .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
         List<Basket> baskets = getBaskets(subject);
-        return SubjectBasketsResponse.from(baskets);
+        return SubjectBasketsResponse.from(subject.getEverytimeLectureId(), baskets);
     }
 
     private List<Basket> getBaskets(Subject subject) {

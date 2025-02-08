@@ -68,6 +68,7 @@ public class BasketApiTest {
         // given
         String expected = """
             {
+                "everytimeLectureId": 2864827,
                 "eachDepartmentRegisters": [
                     {
                         "studentBelong": "본교생",
@@ -80,9 +81,11 @@ public class BasketApiTest {
 
         // when
         when(basketService.getEachSubjectBaskets(1L)).thenReturn(
-            new SubjectBasketsResponse(List.of(
-                new EachDepartmentBasket("본교생", "컴퓨터공학과", 10)
-            ))
+            new SubjectBasketsResponse(
+                2864827L,
+                List.of(
+                    new EachDepartmentBasket("본교생", "컴퓨터공학과", 10)
+                ))
         );
         MvcResult result = mockMvc.perform(get("/api/baskets/1")).andExpect(status().isOk()).andReturn();
 
@@ -96,12 +99,17 @@ public class BasketApiTest {
         // given
         String expected = """
             {
+                "everytimeLectureId": 5412311,
                 "eachDepartmentRegisters": []
             }
             """;
 
         // when
-        when(basketService.getEachSubjectBaskets(1L)).thenReturn(new SubjectBasketsResponse(List.of()));
+        when(basketService.getEachSubjectBaskets(1L)).thenReturn(
+            new SubjectBasketsResponse(
+                5412311L,
+                List.of())
+        );
         MvcResult result = mockMvc.perform(get("/api/baskets/1")).andExpect(status().isOk()).andReturn();
 
         // then
