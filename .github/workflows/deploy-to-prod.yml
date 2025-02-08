@@ -1,0 +1,65 @@
+name: Deploy to Production Server
+
+on:
+  push:
+    branches: [ "release" ]
+
+jobs:
+  deploy:
+    runs-on: [ self-hosted ]
+    environment: production
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: CheckOut
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Test with Gradle Wrapper
+        run: ./gradlew build
+
+      - name: Copy JAR to Local
+        run: |
+          mkdir -p ${{ secrets.APP_DIR }}
+          cp build/libs/*-SNAPSHOT.jar ${{ secrets.APP_DIR }}/server.jar
+
+      - name: Copy application-prod.yml to Local
+        run: |
+          echo "${{ secrets.APPLICATION_YML }}" > ${{ secrets.APP_DIR }}/application-prod.yml
+
+      - name: Stop Existing Application
+        run: |
+          set -x
+          PID=$(pgrep -f "server.jar" || true)
+          if [ -n "$PID" ]; then
+            echo "Stopping existing application..."
+            sudo kill -9 $PID
+          else
+            echo "No existing application found."
+          fi
+
+      - name: Run Application
+        run: |
+          echo "Creating logs directory..."
+          mkdir -p ${{ secrets.APP_DIR }}/logs
+          
+          echo "Starting new application..."
+          sudo nohup java -Dspring.profiles.active=prod \
+          -Dspring.config.location=${{ secrets.APP_DIR }}/application-prod.yml \
+          -Duser.timezone=Asia/Seoul \
+          -Dlogging.file.path=${{ secrets.APP_DIR }}/logs \
+          -jar ${{ secrets.APP_DIR }}/server.jar & 
