@@ -2,7 +2,7 @@ name: Deploy to Production Server
 
 on:
   push:
-    branches: [ "release", "chore/57-deploy-to-prod" ]
+    branches: [ "release" ]
 
 jobs:
   deploy:
