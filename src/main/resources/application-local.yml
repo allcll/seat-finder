@@ -34,3 +34,9 @@ logging:
 app:
   scheduling:
     enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
