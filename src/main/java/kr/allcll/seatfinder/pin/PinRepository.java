@@ -12,4 +12,6 @@ public interface PinRepository extends JpaRepository<Pin, Long> {
     Optional<Pin> findBySubjectAndToken(Subject subject, String token);
 
     boolean existsBySubjectAndToken(Subject subject, String token);
+
+    Long countAllByToken(String token);
 }
