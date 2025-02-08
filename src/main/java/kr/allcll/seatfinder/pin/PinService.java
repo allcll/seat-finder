@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PinService {
 
     private static final int MAX_PIN_NUMBER = 5;
-    private static final String PIN_EVENT_NAME = "현재 관심 과목 담기 정보";
+    private static final String PIN_EVENT_NAME = "사용자의 핀 여석 정보";
 
     private final PinRepository pinRepository;
     private final SubjectRepository subjectRepository;
@@ -67,18 +67,12 @@ public class PinService {
 
     @Scheduled(fixedRate = 1000)
     public void sendPinSeatsInformation() {
-        if (isNotEmpty()) {
-            List<Pin> allByToken = pinRepository.findAllByToken(ThreadLocalHolder.SHARED_TOKEN.get());
-            List<Subject> result = new ArrayList<>();
-            for (Pin pin : allByToken) {
-                result.add(pin.getSubject());
-            }
-            List<Seat> pinSeats = seatStorage.getPinSeats(result);
-            sseService.propagate(PIN_EVENT_NAME, PinSeatsResponse.from(pinSeats));
+        List<Pin> allByToken = pinRepository.findAllByToken(ThreadLocalHolder.SHARED_TOKEN.get());
+        List<Subject> result = new ArrayList<>();
+        for (Pin pin : allByToken) {
+            result.add(pin.getSubject());
         }
-    }
-
-    private boolean isNotEmpty() {
-        return !ThreadLocalHolder.SHARED_TOKEN.get().isEmpty();
+        List<Seat> pinSeats = seatStorage.getPinSeats(result);
+        sseService.propagate(PIN_EVENT_NAME, PinSeatsResponse.from(pinSeats));
     }
 }
