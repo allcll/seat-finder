@@ -13,7 +13,7 @@ import kr.allcll.seatfinder.subject.Subject;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "star")
+@Table(name = "stars")
 @Entity
 @Getter
 @NoArgsConstructor
