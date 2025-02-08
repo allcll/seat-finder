@@ -3,6 +3,7 @@ package kr.allcll.seatfinder.basket;
 import static kr.allcll.seatfinder.support.fixture.BasketFixture.createEmptyBasket;
 import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithDepartmentCode;
 import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithDepartmentInformation;
+import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithEverytimeLectureId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -298,7 +299,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("각 과목에 대한 관심과목 조회를 확인한다.")
-    public void getEachSubjectBasketsTest() {
+    void getEachSubjectBasketsTest() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
@@ -326,7 +327,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("각 과목에 대한 관심과목 조회의 응답값을 확인한다.")
-    public void getEachSubjectBasketResponse() {
+    void getEachSubjectBasketResponse() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
@@ -349,7 +350,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("과목에 대한 관심과목 담기한 인원이 없을 때는 빈 응답을 반환한다.")
-    public void emptyBasketResponse() {
+    void emptyBasketResponse() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
@@ -365,7 +366,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("관심과목 인원이 0명 일 때의 동작을 확인한다.")
-    public void emptyBasket() {
+    void emptyBasket() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
@@ -380,7 +381,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("관심과목 인원이 0명 일 때 과목 조회를 확인한다.")
-    public void emptyBasketSubject() {
+    void emptyBasketSubject() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
@@ -390,6 +391,22 @@ class BasketServiceTest {
 
         // then
         assertThat(eachSubjectBaskets.eachDepartmentRegisters().isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("관심과목 세부 조회에 에브리타임 강의 아이디를 확인한다.")
+    void everytimeLectureIdTest() {
+        // given
+        long everytimeLectureId = 1234567L;
+        Subject subjectA = createSubjectWithEverytimeLectureId(everytimeLectureId, "컴공 과목A", "001234", "001", "김보예",
+            "3210");
+        subjectRepository.save(subjectA);
+
+        // when
+        SubjectBasketsResponse eachSubjectBaskets = basketService.getEachSubjectBaskets(subjectA.getId());
+
+        // then
+        assertThat(eachSubjectBaskets.everytimeLectureId()).isEqualTo(1234567L);
     }
 
     private void saveSubjectsAndBaskets() {

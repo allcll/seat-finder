@@ -35,6 +35,23 @@ public class SubjectFixture {
             "", "", "", "", "");
     }
 
+    public static Subject createSubjectWithEverytimeLectureId(
+        Long everytimeLectureId,
+        String subjectName,
+        String subjectCode,
+        String classCode,
+        String professorName,
+        String departmentCode
+    ) {
+        return new Subject(null, everytimeLectureId, "", "", "", "",
+            subjectCode, subjectName,
+            "", "", "", "", "", "", "", "",
+            professorName, "", "", "", "", departmentCode,
+            "", "",
+            classCode, "", "", "", "", "",
+            "", "", "", "", "");
+    }
+
     public static Subject createSubjectWithDepartmentInformation(
         String subjectName, //과목명
         String departmentName, //개설학과
@@ -59,7 +76,7 @@ public class SubjectFixture {
         String classCode,
         String professorName
     ) {
-        return new Subject(subjectId,
+        return new Subject(subjectId, 0L,
             "", "", "", "",
             subjectCode, subjectName, "", "", "", "", "", "",
             "", "",
@@ -77,7 +94,7 @@ public class SubjectFixture {
         String classCode,
         String professorName
     ) {
-        return new Subject(subjectId,
+        return new Subject(subjectId, 0L,
             "", "", "", "",
             subjectCode, subjectName, "", "", "", "", "", "",
             "", "",
@@ -86,8 +103,5 @@ public class SubjectFixture {
             "컴퓨터공학과", classCode, "", "", "",
             "", "", "", "", "",
             "", "");
-//        return new Subject(subjectId, "소프트웨어융합대학", "컴퓨터공학과", subjectCode, classCode, subjectName, "", "", "", "", "",
-//            "", "", "", "",
-//            "", professorName, "", "", "", "", "", "", "", "3210");
     }
 }

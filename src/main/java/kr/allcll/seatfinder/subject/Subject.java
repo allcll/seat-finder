@@ -24,6 +24,10 @@ public class Subject extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "everytime_lecture_id")
+    private Long everytimeLectureId; // 에브리타임 강의 ID
+
     @Column(name = "smt_cd")
     private String smtCd; // 학기 코드
 
@@ -123,10 +127,6 @@ public class Subject extends BaseEntity {
     @Column(name = "prt_ord")
     private String prtOrd; // 정렬 순서
 
-    public boolean isNonMajor() {
-        return NON_MAJOR_DEPARTMENT_NAME.equals(manageDeptNm);
-    }
-
     public Subject(String smtCd, String smtCdNm, String year, String yearSmtNm, String curiNo, String curiNm,
         String curiTypeCd, String curiTypeCdNm, String cdt, String tmNum, String totTmNum, String studentYear,
         String lesnTime, String lesnRoom, String lesnEmp, String corsUnitGrpCd, String corsUnitGrpCdNm,
@@ -169,5 +169,9 @@ public class Subject extends BaseEntity {
         this.sltDomainCdNm = sltDomainCdNm;
         this.remark = remark;
         this.prtOrd = prtOrd;
+    }
+
+    public boolean isNonMajor() {
+        return NON_MAJOR_DEPARTMENT_NAME.equals(manageDeptNm);
     }
 }
