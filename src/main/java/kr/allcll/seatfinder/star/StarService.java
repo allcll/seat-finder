@@ -42,9 +42,7 @@ public class StarService {
 
     @Transactional
     public void deleteStarOnSubject(Long subjectId, String token) {
-        Subject subject = subjectRepository.findById(subjectId)
-            .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
-        starRepository.deleteStarBySubjectAndToken(subject, token);
+        starRepository.deleteStarBySubjectIdAndToken(subjectId, token);
     }
 
     public StarredSubjectIdsResponse retrieveStars(String token) {

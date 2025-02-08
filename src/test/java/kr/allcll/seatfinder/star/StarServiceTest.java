@@ -2,6 +2,7 @@ package kr.allcll.seatfinder.star;
 
 import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubject;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
@@ -74,7 +75,7 @@ class StarServiceTest {
     @DisplayName("즐겨찾기가 10개 이상일 경우 예외를 검증한다.")
     void canNotAddStarOnSubject() {
         // given
-        int MAX_STAR_NUMBER = 10;
+        int MAX_STAR_NUMBER = 50;
         Subject overCountSubject = createSubject("컴퓨터구조", "003278", "005", "김수민");
         subjectRepository.save(overCountSubject);
         saveSubjectsAndTenStars();
@@ -86,33 +87,12 @@ class StarServiceTest {
     }
 
     private void saveSubjectsAndTenStars() {
-        Subject subjectA = createSubject("컴퓨터구조", "003278", "001", "김보예");
-        Subject subjectB = createSubject("운영체제", "003279", "001", "김수민");
-        Subject subjectC = createSubject("자료구조", "003280", "001", "김봉케");
-        Subject subjectD = createSubject("알고리즘", "003281", "001", "오현지");
-        Subject subjectE = createSubject("컴퓨터구조", "003278", "002", "전유채");
-        Subject subjectF = createSubject("과목6", "003279", "003", "전유채");
-        Subject subjectG = createSubject("과목7", "003270", "002", "김주환");
-        Subject subjectH = createSubject("운영체제", "113278", "001", "김뽀예");
-        Subject subjectI = createSubject("컴퓨터구조", "003278", "002", "전유채");
-        Subject subjectJ = createSubject("자료구조", "003272", "001", "박희준");
-        subjectRepository.saveAll(
-            List.of(subjectA, subjectB, subjectC, subjectD, subjectE, subjectF,
-                subjectG, subjectH, subjectI, subjectJ));
-        starRepository.saveAll(
-            List.of(
-                new Star(TOKEN, subjectA),
-                new Star(TOKEN, subjectB),
-                new Star(TOKEN, subjectC),
-                new Star(TOKEN, subjectD),
-                new Star(TOKEN, subjectE),
-                new Star(TOKEN, subjectF),
-                new Star(TOKEN, subjectG),
-                new Star(TOKEN, subjectH),
-                new Star(TOKEN, subjectI),
-                new Star(TOKEN, subjectJ)
-            )
-        );
+        for (int i = 0; i < 50; i++) {
+            Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
+            subjectRepository.save(subject);
+            Star star = new Star(TOKEN, subject);
+            starRepository.save(star);
+        }
     }
 
     @Test
@@ -131,7 +111,7 @@ class StarServiceTest {
 
     @Test
     @DisplayName("즐겨찾기의 삭제를 검증한다.")
-    void deletePin() {
+    void deleteStar() {
         // given
         Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
         subjectRepository.save(subject);
@@ -145,36 +125,37 @@ class StarServiceTest {
     }
 
     @Test
-    @DisplayName("등록되지 않은 즐겨찾기를 삭제하면 예외가 발생한다.")
-    void deleteNotExistPin() {
+    @DisplayName("즐겨찾기 되지 않은 않는 과목의 즐겨찾기를 삭제할 때에도 예외가 발생하지 않음을 검증한다.")
+    void deleteStarNotExistSubject() {
         // given
-        Subject starSubject = createSubject("즐겨찾기 된 과목", "123456", "001", "김보예");
-        Subject notStarSubject = createSubject("즐겨찾기 안된 과목", "654321", "001", "김주환");
-        subjectRepository.saveAll(List.of(starSubject, notStarSubject));
-        starRepository.save(new Star(TOKEN, starSubject));
+        Subject subjectA = createSubject("컴구", "001234", "001", "김보예");
+        Subject notStarredSubject = createSubject("컴네", "004321", "001", "김수민");
+        subjectRepository.saveAll(List.of(subjectA, notStarredSubject));
+        starRepository.save(new Star(TOKEN, subjectA));
 
         // when, then
-        assertThatThrownBy(() -> starService.deleteStarOnSubject(notStarSubject.getId(), TOKEN))
-            .isInstanceOf(AllcllException.class)
-            .hasMessageContaining(AllcllErrorCode.STAR_SUBJECT_MISMATCH.getMessage());
+        assertThatCode(() -> {
+            starService.deleteStarOnSubject(notStarredSubject.getId(), TOKEN);
+        }).doesNotThrowAnyException();
     }
 
     @Test
-    @DisplayName("존재하지 않는 토큰에 대한 예외를 검증한다.")
-    void deleteNotExistToken() {
+    @DisplayName("존재 하지 않는 토큰의 즐겨찾기를 삭제할 때에도 예외가 발생하지 않음을 검증한다.")
+    void deleteStarNotExistToken() {
         // given
-        Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
-        subjectRepository.save(subject);
+        Subject subjectA = createSubject("컴구", "001234", "001", "김보예");
+        subjectRepository.save(subjectA);
+        starRepository.save(new Star(TOKEN, subjectA));
 
         // when, then
-        assertThatThrownBy(() -> starService.deleteStarOnSubject(subject.getId(), TOKEN))
-            .isInstanceOf(AllcllException.class)
-            .hasMessageContaining(AllcllErrorCode.STAR_SUBJECT_MISMATCH.getMessage());
+        assertThatCode(() -> {
+            starService.deleteStarOnSubject(subjectA.getId(), "notExistToken");
+        }).doesNotThrowAnyException();
     }
 
     @Test
-    @DisplayName("등록된 핀이 존재할 때 조회 기능을 테스트한다.")
-    void retrieveExistPins() {
+    @DisplayName("등록된 즐겨찾기가 존재할 때 조회 기능을 테스트한다.")
+    void retrieveExisStars() {
         // given
         int expectedSize = 1;
         Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
@@ -189,7 +170,7 @@ class StarServiceTest {
     }
 
     @Test
-    @DisplayName("등록된 핀이 존재할 때 예외가 발생하지 않음을 검증한다.")
+    @DisplayName("등록된 즐겨찾기가 존재할 때 예외가 발생하지 않음을 검증한다.")
     void retrieveStars() {
         // given
         int expectedSize = 0;

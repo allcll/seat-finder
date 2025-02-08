@@ -12,5 +12,5 @@ public interface StarRepository extends JpaRepository<Star, Long> {
 
     Long countAllByToken(String token);
 
-    void deleteStarBySubjectAndToken(Subject subject, String token);
+    void deleteStarBySubjectIdAndToken(Long subjectId, String token);
 }
