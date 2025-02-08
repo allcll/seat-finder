@@ -1,13 +1,13 @@
-name: Deploy to Develop Server
+name: Deploy to Production Server
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "release" ]
 
 jobs:
   deploy:
-    runs-on: [ self-hosted, "dev" ]
-    environment: develop
+    runs-on: [ self-hosted, "prod" ]
+    environment: production
 
     defaults:
       run:
@@ -34,12 +34,12 @@ jobs:
 
       - name: Copy JAR to Local
         run: |
-          mkdir -p /home/ubuntu/app
-          cp build/libs/*-SNAPSHOT.jar /home/ubuntu/app/server.jar
+          mkdir -p ${{ secrets.APP_DIR }}
+          cp build/libs/*-SNAPSHOT.jar ${{ secrets.APP_DIR }}/server.jar
 
-      - name: Copy application-dev.yml to Local
+      - name: Copy application-prod.yml to Local
         run: |
-          echo "${{ secrets.APPLICATION_YML }}" > /home/ubuntu/app/application-dev.yml
+          echo "${{ secrets.APPLICATION_YML }}" > ${{ secrets.APP_DIR }}/application-prod.yml
 
       - name: Stop Existing Application
         run: |
@@ -55,11 +55,11 @@ jobs:
       - name: Run Application
         run: |
           echo "Creating logs directory..."
-          mkdir -p /home/ubuntu/app/logs
+          mkdir -p ${{ secrets.APP_DIR }}/logs
           
           echo "Starting new application..."
-          sudo nohup java -Dspring.profiles.active=dev \
-          -Dspring.config.location=/home/ubuntu/app/application-dev.yml \
+          sudo nohup java -Dspring.profiles.active=prod \
+          -Dspring.config.location=${{ secrets.APP_DIR }}/application-prod.yml \
           -Duser.timezone=Asia/Seoul \
-          -Dlogging.file.path=/home/ubuntu/app/logs \
-          -jar /home/ubuntu/app/server.jar & 
+          -Dlogging.file.path=${{ secrets.APP_DIR }}/logs \
+          -jar ${{ secrets.APP_DIR }}/server.jar & 
