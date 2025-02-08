@@ -39,29 +39,13 @@ class StarServiceTest {
     }
 
     @Test
-    @DisplayName("즐겨찾기 5개 미만일 경우 정상 등록을 검증한다.")
+    @DisplayName("즐겨찾기 50개 미만일 경우 정상 등록을 검증한다.")
     void addStarOnProject() {
         // given
-        int expected = 5;
-        Subject subjectA = createSubject("컴퓨터구조", "003278", "001", "김보예");
-        Subject subjectB = createSubject("컴퓨터구조", "003278", "002", "김보예");
-        Subject subjectC = createSubject("컴퓨터구조", "003278", "003", "김보예");
-        Subject subjectD = createSubject("컴퓨터구조", "003278", "004", "김보예");
+        int expected = 50;
         Subject starSubject = createSubject("컴퓨터구조", "003278", "005", "김보예");
-        subjectRepository.saveAll(List.of(
-            subjectA,
-            subjectB,
-            subjectC,
-            subjectD,
-            starSubject
-        ));
-        starRepository.saveAll(List.of(
-                new Star(TOKEN, subjectA),
-                new Star(TOKEN, subjectB),
-                new Star(TOKEN, subjectC),
-                new Star(TOKEN, subjectD)
-            )
-        );
+        saveSubjectsAndStars();
+        subjectRepository.save(starSubject);
         starService.addStarOnSubject(starSubject.getId(), TOKEN);
 
         // when
@@ -71,14 +55,23 @@ class StarServiceTest {
         assertThat(result).hasSize(expected);
     }
 
+    private void saveSubjectsAndStars() {
+        for (int i = 0; i < 49; i++) {
+            Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
+            subjectRepository.save(subject);
+            Star star = new Star(TOKEN, subject);
+            starRepository.save(star);
+        }
+    }
+
     @Test
-    @DisplayName("즐겨찾기가 10개 이상일 경우 예외를 검증한다.")
+    @DisplayName("즐겨찾기가 50개 이상일 경우 예외를 검증한다.")
     void canNotAddStarOnSubject() {
         // given
         int MAX_STAR_NUMBER = 50;
         Subject overCountSubject = createSubject("컴퓨터구조", "003278", "005", "김수민");
         subjectRepository.save(overCountSubject);
-        saveSubjectsAndTenStars();
+        saveSubjectsAndMaxStars();
 
         // when, then
         assertThatThrownBy(() -> starService.addStarOnSubject(overCountSubject.getId(), TOKEN))
@@ -86,7 +79,7 @@ class StarServiceTest {
             .hasMessageContaining(String.format(AllcllErrorCode.STAR_LIMIT_EXCEEDED.getMessage(), MAX_STAR_NUMBER));
     }
 
-    private void saveSubjectsAndTenStars() {
+    private void saveSubjectsAndMaxStars() {
         for (int i = 0; i < 50; i++) {
             Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
             subjectRepository.save(subject);
