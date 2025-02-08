@@ -298,7 +298,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("각 과목에 대한 관심과목 조회를 확인한다.")
-    public void getEachSubjectBasketsTest() {
+    void getEachSubjectBasketsTest() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
@@ -326,7 +326,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("각 과목에 대한 관심과목 조회의 응답값을 확인한다.")
-    public void getEachSubjectBasketResponse() {
+    void getEachSubjectBasketResponse() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
@@ -349,7 +349,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("과목에 대한 관심과목 담기한 인원이 없을 때는 빈 응답을 반환한다.")
-    public void emptyBasketResponse() {
+    void emptyBasketResponse() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
@@ -365,7 +365,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("관심과목 인원이 0명 일 때의 동작을 확인한다.")
-    public void emptyBasket() {
+    void emptyBasket() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
@@ -380,7 +380,7 @@ class BasketServiceTest {
 
     @Test
     @DisplayName("관심과목 인원이 0명 일 때 과목 조회를 확인한다.")
-    public void emptyBasketSubject() {
+    void emptyBasketSubject() {
         // given
         Subject subjectA = createSubjectWithDepartmentCode("컴공 과목A", "001234", "001", "김보예", "3210");
         subjectRepository.save(subjectA);
