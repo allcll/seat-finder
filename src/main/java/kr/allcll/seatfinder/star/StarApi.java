@@ -1,7 +1,7 @@
 package kr.allcll.seatfinder.star;
 
 import kr.allcll.seatfinder.ThreadLocalHolder;
-import kr.allcll.seatfinder.pin.dto.SubjectIdsResponse;
+import kr.allcll.seatfinder.star.dto.StarredSubjectIdsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,8 +30,8 @@ public class StarApi {
     }
 
     @GetMapping("/api/stars")
-    public ResponseEntity<SubjectIdsResponse> retrieveStars() {
-        SubjectIdsResponse response = starService.retrieveStars(ThreadLocalHolder.SHARED_TOKEN.get());
+    public ResponseEntity<StarredSubjectIdsResponse> retrieveStars() {
+        StarredSubjectIdsResponse response = starService.retrieveStars(ThreadLocalHolder.SHARED_TOKEN.get());
         return ResponseEntity.ok(response);
     }
 }

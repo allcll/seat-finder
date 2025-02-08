@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
-import kr.allcll.seatfinder.pin.dto.SubjectIdsResponse;
+import kr.allcll.seatfinder.star.dto.StarredSubjectIdsResponse;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 class StarServiceTest {
 
-    private static final int MAX_STAR_NUMBER = 10;
     private static final String TOKEN = "token";
 
     @Autowired
@@ -75,6 +74,7 @@ class StarServiceTest {
     @DisplayName("즐겨찾기가 10개 이상일 경우 예외를 검증한다.")
     void canNotAddStarOnSubject() {
         // given
+        int MAX_STAR_NUMBER = 10;
         Subject overCountSubject = createSubject("컴퓨터구조", "003278", "005", "김수민");
         subjectRepository.save(overCountSubject);
         saveSubjectsAndTenStars();
@@ -122,12 +122,11 @@ class StarServiceTest {
         Subject subject = createSubject("컴퓨터구조", "003278", "001", "김보예");
         subjectRepository.save(subject);
         starRepository.save(new Star(TOKEN, subject));
-        String expectExceptionMessage = new AllcllException(AllcllErrorCode.DUPLICATE_STAR, "컴퓨터구조").getMessage();
 
         // when, then
         assertThatThrownBy(() -> starService.addStarOnSubject(subject.getId(), TOKEN))
             .isInstanceOf(AllcllException.class)
-            .hasMessageContaining(expectExceptionMessage);
+            .hasMessageContaining(new AllcllException(AllcllErrorCode.DUPLICATE_STAR, "컴퓨터구조").getMessage());
     }
 
     @Test
@@ -146,7 +145,7 @@ class StarServiceTest {
     }
 
     @Test
-    @DisplayName("등록되지 않은 즐겨찾기의 삭제에 대한 예외를 검증한다.")
+    @DisplayName("등록되지 않은 즐겨찾기를 삭제하면 예외가 발생한다.")
     void deleteNotExistPin() {
         // given
         Subject starSubject = createSubject("즐겨찾기 된 과목", "123456", "001", "김보예");
@@ -183,7 +182,7 @@ class StarServiceTest {
         starRepository.save(new Star(TOKEN, subject));
 
         // when
-        SubjectIdsResponse response = starService.retrieveStars(TOKEN);
+        StarredSubjectIdsResponse response = starService.retrieveStars(TOKEN);
 
         // then
         assertThat(response.subjects()).hasSize(expectedSize);
@@ -196,7 +195,7 @@ class StarServiceTest {
         int expectedSize = 0;
 
         // when
-        SubjectIdsResponse response = starService.retrieveStars(TOKEN);
+        StarredSubjectIdsResponse response = starService.retrieveStars(TOKEN);
 
         // then
         assertThat(response.subjects()).hasSize(expectedSize);

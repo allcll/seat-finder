@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import jakarta.servlet.http.Cookie;
 import java.util.List;
-import kr.allcll.seatfinder.pin.dto.SubjectIdResponse;
-import kr.allcll.seatfinder.pin.dto.SubjectIdsResponse;
+import kr.allcll.seatfinder.star.dto.StarredSubjectIdResponse;
+import kr.allcll.seatfinder.star.dto.StarredSubjectIdsResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,9 +62,12 @@ class StarApiTest {
                 }
             """;
 
-        List<SubjectIdResponse> subjects = List.of(new SubjectIdResponse(1L), new SubjectIdResponse(2L));
+        List<StarredSubjectIdResponse> subjects = List.of(
+            new StarredSubjectIdResponse(1L),
+            new StarredSubjectIdResponse(2L)
+        );
         when(starService.retrieveStars("tokenValue"))
-            .thenReturn(new SubjectIdsResponse(subjects));
+            .thenReturn(new StarredSubjectIdsResponse(subjects));
 
         // when
         MvcResult result = mockMvc.perform(get("/api/stars")
