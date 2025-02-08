@@ -13,6 +13,7 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
+    open-in-view: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
@@ -33,3 +34,9 @@ logging:
 app:
   scheduling:
     enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health
