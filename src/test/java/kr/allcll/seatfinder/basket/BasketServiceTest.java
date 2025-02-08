@@ -3,6 +3,7 @@ package kr.allcll.seatfinder.basket;
 import static kr.allcll.seatfinder.support.fixture.BasketFixture.createEmptyBasket;
 import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithDepartmentCode;
 import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithDepartmentInformation;
+import static kr.allcll.seatfinder.support.fixture.SubjectFixture.createSubjectWithEverytimeLectureId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -390,6 +391,22 @@ class BasketServiceTest {
 
         // then
         assertThat(eachSubjectBaskets.eachDepartmentRegisters().isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("관심과목 세부 조회에 에브리타임 강의 아이디를 확인한다.")
+    void everytimeLectureIdTest() {
+        // given
+        long everytimeLectureId = 1234567L;
+        Subject subjectA = createSubjectWithEverytimeLectureId(everytimeLectureId, "컴공 과목A", "001234", "001", "김보예",
+            "3210");
+        subjectRepository.save(subjectA);
+
+        // when
+        SubjectBasketsResponse eachSubjectBaskets = basketService.getEachSubjectBaskets(subjectA.getId());
+
+        // then
+        assertThat(eachSubjectBaskets.everytimeLectureId()).isEqualTo(1234567L);
     }
 
     private void saveSubjectsAndBaskets() {

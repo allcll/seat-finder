@@ -35,6 +35,23 @@ public class SubjectFixture {
             "", "", "", "", "");
     }
 
+    public static Subject createSubjectWithEverytimeLectureId(
+        Long everytimeLectureId,
+        String subjectName,
+        String subjectCode,
+        String classCode,
+        String professorName,
+        String departmentCode
+    ) {
+        return new Subject(null, everytimeLectureId, "", "", "", "",
+            subjectCode, subjectName,
+            "", "", "", "", "", "", "", "",
+            professorName, "", "", "", "", departmentCode,
+            "", "",
+            classCode, "", "", "", "", "",
+            "", "", "", "", "");
+    }
+
     public static Subject createSubjectWithDepartmentInformation(
         String subjectName, //과목명
         String departmentName, //개설학과
