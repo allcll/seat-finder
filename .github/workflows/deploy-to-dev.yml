@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [ self-hosted ]
+    runs-on: [ self-hosted, "test-server" ]
     environment: develop
 
     defaults:
