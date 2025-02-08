@@ -1,13 +1,20 @@
 package kr.allcll.seatfinder.pin;
 
+import java.util.ArrayList;
 import java.util.List;
+import kr.allcll.seatfinder.ThreadLocalHolder;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
+import kr.allcll.seatfinder.pin.dto.PinSeatsResponse;
 import kr.allcll.seatfinder.pin.dto.SubjectIdResponse;
 import kr.allcll.seatfinder.pin.dto.SubjectIdsResponse;
+import kr.allcll.seatfinder.seat.Seat;
+import kr.allcll.seatfinder.seat.SeatStorage;
+import kr.allcll.seatfinder.sse.SseService;
 import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,9 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PinService {
 
     private static final int MAX_PIN_NUMBER = 5;
+    private static final String PIN_EVENT_NAME = "현재 관심 과목 담기 정보";
 
     private final PinRepository pinRepository;
     private final SubjectRepository subjectRepository;
+    private final SeatStorage seatStorage;
+    private final SseService sseService;
 
     @Transactional
     public void addPinOnSubject(Long subjectId, String token) {
@@ -53,5 +63,22 @@ public class PinService {
         return new SubjectIdsResponse(pins.stream()
             .map(pin -> new SubjectIdResponse(pin.getSubject().getId()))
             .toList());
+    }
+
+    @Scheduled(fixedRate = 1000)
+    public void sendPinSeatsInformation() {
+        if (isNotEmpty()) {
+            List<Pin> allByToken = pinRepository.findAllByToken(ThreadLocalHolder.SHARED_TOKEN.get());
+            List<Subject> result = new ArrayList<>();
+            for (Pin pin : allByToken) {
+                result.add(pin.getSubject());
+            }
+            List<Seat> pinSeats = seatStorage.getPinSeats(result);
+            sseService.propagate(PIN_EVENT_NAME, PinSeatsResponse.from(pinSeats));
+        }
+    }
+
+    private boolean isNotEmpty() {
+        return !ThreadLocalHolder.SHARED_TOKEN.get().isEmpty();
     }
 }
