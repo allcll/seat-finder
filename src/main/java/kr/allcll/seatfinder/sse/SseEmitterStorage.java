@@ -42,4 +42,8 @@ public class SseEmitterStorage {
     public List<SseEmitter> getEmitters() {
         return emitters.values().stream().toList();
     }
+
+    public Map<String, SseEmitter> getMapEmitters() {
+        return emitters;
+    }
 }
