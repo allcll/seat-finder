@@ -22,7 +22,7 @@ public class SeatStorage {
             .toList();
     }
 
-    public List<Seat> getPinSeats(List<Subject> subjects) {
+    public List<Seat> getSeats(List<Subject> subjects) {
         List<Seat> result = new ArrayList<>();
         for (Subject subject : subjects) {
             for (Seat seat : seats) {

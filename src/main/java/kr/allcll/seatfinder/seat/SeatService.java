@@ -22,6 +22,8 @@ public class SeatService {
     private static final String NON_MAJOR_SEATS_EVENT_NAME = "nonMajorSeats";
     private static final int NON_MAJOR_SUBJECT_QUERY_LIMIT = 10;
     private static final String PIN_EVENT_NAME = "pinSeats";
+    private static final int TASK_DURATION = 1000;
+    private static final int TASK_PERIOD = 10000;
 
     private final SseService sseService;
     private final SeatStorage seatStorage;
@@ -40,11 +42,11 @@ public class SeatService {
             List<Subject> subjects = pins.stream()
                 .map(Pin::getSubject)
                 .toList();
-            List<Seat> pinSeats = seatStorage.getPinSeats(subjects);
+            List<Seat> pinSeats = seatStorage.getSeats(subjects);
             sseService.propagate(PIN_EVENT_NAME, PinSeatsResponse.from(pinSeats));
         };
-        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(task, Duration.ofMillis(1000));
+        ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(task, Duration.ofMillis(TASK_DURATION));
         scheduler.schedule(() -> scheduledFuture.cancel(true),
-            new Date(System.currentTimeMillis() + 10000));
+            new Date(System.currentTimeMillis() + TASK_PERIOD));
     }
 }
