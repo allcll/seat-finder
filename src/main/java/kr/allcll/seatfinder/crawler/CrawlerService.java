@@ -66,7 +66,7 @@ public class CrawlerService {
         }
     }
 
-    @Scheduled(fixedDelay = 1000 * 60) // 이전 작업 이후 1분. 1분으로 될 지 걱정
+    @Scheduled(fixedDelay = 1000 * 60) // TODO: 이전 작업 이후 1분. 주기 합의 필요
     public void sendWantPinSubjectIdsToCrawler() {
         WantPinSubjectsRequest request = getPinSubjects();
         ResponseEntity<String> response = crawlerClient.retrieveWantPinSubjectsRequest(request);
