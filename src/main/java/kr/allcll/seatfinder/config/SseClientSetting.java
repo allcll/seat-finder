@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class SseClientConfig {
+public class SseClientSetting {
 
     private final SseClientService sseClientService;
 
