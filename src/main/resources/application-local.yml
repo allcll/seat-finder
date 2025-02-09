@@ -42,7 +42,7 @@ management:
         include: prometheus, health
 
 cookie:
-  max-age: 365D
+  max-age: 2190D
   secure: true
   http-only: true
   same-site: strict
