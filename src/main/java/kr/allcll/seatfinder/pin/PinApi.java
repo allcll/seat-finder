@@ -38,10 +38,4 @@ public class PinApi {
         SubjectIdsResponse response = pinService.retrievePins(ThreadLocalHolder.SHARED_TOKEN.get());
         return ResponseEntity.ok(response);
     }
-
-    @GetMapping(value = "/api/pins/sse-connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> getServerSentEventConnectionAtPins() {
-        String token = ThreadLocalHolder.SHARED_TOKEN.get();
-        return ResponseEntity.ok(sseService.connect(token));
-    }
 }
