@@ -3,12 +3,14 @@ package kr.allcll.seatfinder.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "app.runner.enabled", havingValue = "true", matchIfMissing = true)
 public class ExternalConfig {
 
     private final ExternalPreInvoker externalPreInvoker;
