@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import kr.allcll.seatfinder.basket.Basket;
 import kr.allcll.seatfinder.basket.BasketRepository;
-import kr.allcll.seatfinder.crawler.dto.WantNonMajorRequest;
-import kr.allcll.seatfinder.crawler.dto.WantPinSubject;
-import kr.allcll.seatfinder.crawler.dto.WantPinSubjectsRequest;
+import kr.allcll.seatfinder.crawler.dto.NonMajorRequest;
+import kr.allcll.seatfinder.crawler.dto.PinSubject;
+import kr.allcll.seatfinder.crawler.dto.PinSubjectsRequest;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
 import kr.allcll.seatfinder.pin.Pin;
@@ -66,7 +66,7 @@ public class CrawlerService {
 
     public void sendToCrawlerNonMajorRequest() {
         List<Subject> topNonMajors = topNonMajorStorage.getSubjects();
-        ResponseEntity<String> response = crawlerClient.retrieveNonMajor(WantNonMajorRequest.from(topNonMajors));
+        ResponseEntity<String> response = crawlerClient.retrieveNonMajor(NonMajorRequest.from(topNonMajors));
         if (SUCCESS_MESSAGE.equals(response.getBody())) {
             log.info("교양 과목 정보를 전달 성공했습니다.");
         }
@@ -74,14 +74,14 @@ public class CrawlerService {
 
     @Scheduled(fixedDelay = 1000 * 60) // TODO: 이전 작업 이후 1분. 주기 합의 필요
     public void sendWantPinSubjectIdsToCrawler() {
-        WantPinSubjectsRequest request = getPinSubjects();
+        PinSubjectsRequest request = getPinSubjects();
         ResponseEntity<String> response = crawlerClient.retrieveWantPinSubjectsRequest(request);
         if (SUCCESS_MESSAGE.equals(response.getBody())) {
             log.info("pin 과목 정보를 전달 성공했습니다.");
         }
     }
 
-    private WantPinSubjectsRequest getPinSubjects() {
+    private PinSubjectsRequest getPinSubjects() {
         List<String> tokens = sseEmitterStorage.getUserTokens();
         Map<Subject, Integer> pinSubjects = new HashMap<>();
         for (String token : tokens) {
@@ -91,12 +91,12 @@ public class CrawlerService {
                 pinSubjects.merge(subject, 1, Integer::sum);
             }
         }
-        List<WantPinSubject> wantPinSubjects = getWantPinSubjects(pinSubjects);
-        WantPinSubjectsRequest request = WantPinSubjectsRequest.from(wantPinSubjects);
+        List<PinSubject> wantPinSubjects = getWantPinSubjects(pinSubjects);
+        PinSubjectsRequest request = PinSubjectsRequest.from(wantPinSubjects);
         return request;
     }
 
-    private List<WantPinSubject> getWantPinSubjects(Map<Subject, Integer> pinSubjects) {
+    private List<PinSubject> getWantPinSubjects(Map<Subject, Integer> pinSubjects) {
         List<Long> subjectIds = pinSubjects.keySet().stream()
             .sorted((o1, o2) -> pinSubjects.get(o2).compareTo(pinSubjects.get(o1)))
             .map(Subject::getId)
@@ -106,18 +106,17 @@ public class CrawlerService {
         int firstIdx = mapSize / 3;
         int secondIdx = mapSize * 2 / 3;
 
-        List<WantPinSubject> firstPrioritySubject = getPrioritySubject(subjectIds.subList(0, firstIdx), 1);
-        List<WantPinSubject> secondPrioritySubject = getPrioritySubject(subjectIds.subList(firstIdx, secondIdx), 2);
-        List<WantPinSubject> thirdPrioritySubject = getPrioritySubject(subjectIds.subList(secondIdx, subjectIds.size()),
-            3);
+        List<PinSubject> firstPrioritySubject = getPrioritySubject(subjectIds.subList(0, firstIdx), 1);
+        List<PinSubject> secondPrioritySubject = getPrioritySubject(subjectIds.subList(firstIdx, secondIdx), 2);
+        List<PinSubject> thirdPrioritySubject = getPrioritySubject(subjectIds.subList(secondIdx, subjectIds.size()), 3);
         firstPrioritySubject.addAll(secondPrioritySubject);
         firstPrioritySubject.addAll(thirdPrioritySubject);
         return firstPrioritySubject;
     }
 
-    private List<WantPinSubject> getPrioritySubject(List<Long> subjectIds, int priority) {
+    private List<PinSubject> getPrioritySubject(List<Long> subjectIds, int priority) {
         return subjectIds.stream()
-            .map(subjectId -> new WantPinSubject(subjectId, priority))
+            .map(subjectId -> new PinSubject(subjectId, priority))
             .toList();
     }
 }

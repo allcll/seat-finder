@@ -1,6 +1,6 @@
 package kr.allcll.seatfinder.crawler.dto;
 
-public record WantPinSubject(
+public record PinSubject(
     Long subjectId,
     int priority
 ) {

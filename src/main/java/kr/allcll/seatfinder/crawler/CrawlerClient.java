@@ -1,7 +1,7 @@
 package kr.allcll.seatfinder.crawler;
 
-import kr.allcll.seatfinder.crawler.dto.WantNonMajorRequest;
-import kr.allcll.seatfinder.crawler.dto.WantPinSubjectsRequest;
+import kr.allcll.seatfinder.crawler.dto.NonMajorRequest;
+import kr.allcll.seatfinder.crawler.dto.PinSubjectsRequest;
 import kr.allcll.seatfinder.sse.SseClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class CrawlerClient {
     private static final String URI = "/api/";
 
     // TODO: 어떤식으로 응답이 오는지, 어떤 HTTP method로 받는지에 따라 수정 필요. 응답으로 SUCCESS 보내줬음 좋겠음.
-    public ResponseEntity<String> retrieveNonMajor(WantNonMajorRequest request) {
+    public ResponseEntity<String> retrieveNonMajor(NonMajorRequest request) {
         return restClient.post()
             .uri(URI)
             .body(request)
@@ -26,7 +26,7 @@ public class CrawlerClient {
             .toEntity(String.class);
     }
 
-    public ResponseEntity<String> retrieveWantPinSubjectsRequest(WantPinSubjectsRequest request) {
+    public ResponseEntity<String> retrieveWantPinSubjectsRequest(PinSubjectsRequest request) {
         return restClient.post()
             .uri(URI)
             .body(request)
