@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
+import kr.allcll.seatfinder.crawler.ExternalProperties;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
 import kr.allcll.seatfinder.seat.PinRemainSeat;
@@ -18,6 +19,7 @@ import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -25,12 +27,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@EnableConfigurationProperties(ExternalProperties.class)
 public class SseClientService {
 
-    private static final String SseClientURL = "/api/";
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final SeatStorage seatStorage;
     private final SubjectRepository subjectRepository;
+    private final ExternalProperties externalProperties;
 
     @Retryable(
         maxAttempts = 5,
@@ -38,12 +41,11 @@ public class SseClientService {
     )
     public void getSseData() {
         try {
-            // 외부 서버의 SSE 엔드포인트 URL
-            URL url = new URI(SseClientURL).toURL();
+            URL url = new URI(externalProperties.host() + externalProperties.connectionPath()).toURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET"); // GET 요청 설정
-            connection.setRequestProperty("Accept", "text/event-stream"); // SSE 형식의 응답 요청?
-            connection.setDoOutput(true); // 출력 스트림 사용 가능
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "text/event-stream");
+            connection.setDoOutput(true);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
