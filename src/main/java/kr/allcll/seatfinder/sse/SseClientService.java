@@ -9,9 +9,9 @@ import java.net.URI;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
-import kr.allcll.seatfinder.crawler.ExternalProperties;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
+import kr.allcll.seatfinder.external.ExternalProperties;
 import kr.allcll.seatfinder.seat.PinRemainSeat;
 import kr.allcll.seatfinder.seat.Seat;
 import kr.allcll.seatfinder.seat.SeatStorage;
@@ -20,8 +20,6 @@ import kr.allcll.seatfinder.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -35,17 +33,10 @@ public class SseClientService {
     private final SubjectRepository subjectRepository;
     private final ExternalProperties externalProperties;
 
-    @Retryable(
-        maxAttempts = 5,
-        backoff = @Backoff(delay = 1000)
-    )
     public void getSseData() {
         try {
-            URL url = new URI(externalProperties.host() + externalProperties.connectionPath()).toURL();
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "text/event-stream");
-            connection.setDoOutput(true);
+            String host = externalProperties.host() + externalProperties.connectionPath();
+            HttpURLConnection connection = getConnection(host);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
@@ -54,14 +45,23 @@ public class SseClientService {
                 for (PinRemainSeat pinRemainSeat : pinRemainSeats) {
                     Subject subject = subjectRepository.findById(pinRemainSeat.getSubjectId())
                         .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
-                    seatStorage.add(
-                        new Seat(subject, pinRemainSeat.getRemainSeats(), LocalDateTime.now()));
+                    seatStorage.add(new Seat(subject, pinRemainSeat.getRemainSeats(), LocalDateTime.now()));
                 }
             }
             reader.close();
+            throw new RuntimeException("SSE connection closed");
         } catch (Exception e) {
-            log.error("SSE error", e);
+            throw new RuntimeException("SSE connection error", e);
         }
+    }
+
+    private HttpURLConnection getConnection(String host) throws Exception {
+        URL url = new URI(host).toURL();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", "text/event-stream");
+        connection.setDoOutput(true);
+        return connection;
     }
 
     private List<PinRemainSeat> parseJson(String json) throws Exception {

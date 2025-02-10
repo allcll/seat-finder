@@ -1,4 +1,4 @@
-package kr.allcll.seatfinder.crawler;
+package kr.allcll.seatfinder.external;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

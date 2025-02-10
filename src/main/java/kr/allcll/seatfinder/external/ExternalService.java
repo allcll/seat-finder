@@ -1,15 +1,15 @@
-package kr.allcll.seatfinder.crawler;
+package kr.allcll.seatfinder.external;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kr.allcll.seatfinder.basket.Basket;
 import kr.allcll.seatfinder.basket.BasketRepository;
-import kr.allcll.seatfinder.crawler.dto.NonMajorRequest;
-import kr.allcll.seatfinder.crawler.dto.PinSubject;
-import kr.allcll.seatfinder.crawler.dto.PinSubjectsRequest;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
+import kr.allcll.seatfinder.external.dto.NonMajorRequest;
+import kr.allcll.seatfinder.external.dto.PinSubject;
+import kr.allcll.seatfinder.external.dto.PinSubjectsRequest;
 import kr.allcll.seatfinder.pin.Pin;
 import kr.allcll.seatfinder.pin.PinRepository;
 import kr.allcll.seatfinder.sse.SseEmitterStorage;
@@ -17,17 +17,15 @@ import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CrawlerService {
+public class ExternalService {
 
-    private static final String NON_MAJOR_DEPT_CD = "9005"; // 대양휴머니티칼리지 학과코드
-    private static final String SUCCESS_MESSAGE = "SUCCESS";
+    private static final String NON_MAJOR_DEPT_CD = "9005";
     private static final int SUBJECT_OFFER_COUNT = 20;
 
     private final SubjectRepository subjectRepository;
@@ -35,13 +33,14 @@ public class CrawlerService {
     private final PinRepository pinRepository;
     private final TopNonMajorStorage topNonMajorStorage;
     private final SseEmitterStorage sseEmitterStorage;
-    private final CrawlerClient crawlerClient;
+    private final ExternalClient externalClient;
 
     public void saveNonMajorSubjects() {
         List<Subject> nonMajorSubjects = subjectRepository.findAllByDeptCd(NON_MAJOR_DEPT_CD);
         Map<Subject, Integer> nonMajorSeats = getNonMajorSeats(nonMajorSubjects);
         List<Subject> topSubjects = getTopSubjects(nonMajorSeats);
         topNonMajorStorage.addAll(topSubjects);
+        log.info("저장한 교양 과목 수: {}", topSubjects.size());
     }
 
     private Map<Subject, Integer> getNonMajorSeats(List<Subject> nonMajorSubjects) {
@@ -66,19 +65,13 @@ public class CrawlerService {
 
     public void sendToCrawlerNonMajorRequest() {
         List<Subject> topNonMajors = topNonMajorStorage.getSubjects();
-        ResponseEntity<String> response = crawlerClient.retrieveNonMajor(NonMajorRequest.from(topNonMajors));
-        if (SUCCESS_MESSAGE.equals(response.getBody())) {
-            log.info("교양 과목 정보를 전달 성공했습니다.");
-        }
+        externalClient.sendNonMajor(NonMajorRequest.from(topNonMajors));
     }
 
-    @Scheduled(fixedDelay = 1000 * 60) // TODO: 이전 작업 이후 1분. 주기 합의 필요
+    @Scheduled(fixedDelay = 1000 * 60)
     public void sendWantPinSubjectIdsToCrawler() {
         PinSubjectsRequest request = getPinSubjects();
-        ResponseEntity<String> response = crawlerClient.retrieveWantPinSubjectsRequest(request);
-        if (SUCCESS_MESSAGE.equals(response.getBody())) {
-            log.info("pin 과목 정보를 전달 성공했습니다.");
-        }
+        externalClient.sendPinSubjects(request);
     }
 
     private PinSubjectsRequest getPinSubjects() {

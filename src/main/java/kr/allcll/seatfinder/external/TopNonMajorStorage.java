@@ -1,4 +1,4 @@
-package kr.allcll.seatfinder.crawler;
+package kr.allcll.seatfinder.external;
 
 import java.util.ArrayList;
 import java.util.List;
