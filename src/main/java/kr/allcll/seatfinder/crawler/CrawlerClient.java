@@ -16,6 +16,7 @@ public class CrawlerClient {
 
     private final RestClient restClient;
     private final SseClientService sseClientService;
+
     @Value("${external.host}")
     private String host;
 
@@ -36,7 +37,6 @@ public class CrawlerClient {
             .toEntity(String.class);
     }
 
-    // 주기적으로 크롤러에게 SSE 달라고 요청 후 열기를 의도함
     @Scheduled(fixedDelay = 1000 * 60)
     public void requestSseConnection() {
         restClient.post()
