@@ -35,6 +35,9 @@ app:
   scheduling:
     enabled: true
 
+external:
+  host: http://localhost:9090
+
 management:
   endpoints:
     web:
