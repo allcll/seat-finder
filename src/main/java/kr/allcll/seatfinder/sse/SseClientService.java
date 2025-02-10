@@ -18,6 +18,8 @@ import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -30,6 +32,10 @@ public class SseClientService {
     private final SeatStorage seatStorage;
     private final SubjectRepository subjectRepository;
 
+    @Retryable(
+        maxAttempts = 5,
+        backoff = @Backoff(delay = 1000)
+    )
     public void getSseData() {
         try {
             // 외부 서버의 SSE 엔드포인트 URL
