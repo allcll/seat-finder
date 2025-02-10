@@ -1,10 +1,8 @@
 package kr.allcll.seatfinder.crawler;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import kr.allcll.seatfinder.basket.Basket;
 import kr.allcll.seatfinder.basket.BasketRepository;
 import kr.allcll.seatfinder.crawler.dto.WantNonMajorRequest;
@@ -22,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
 @Service
@@ -41,25 +38,34 @@ public class CrawlerService {
     private final CrawlerClient crawlerClient;
 
     public void saveNonMajorSubjects() {
-        Map<Long, Integer> nonMajorInformation = new HashMap<>();
         List<Subject> nonMajorSubjects = subjectRepository.findAllByDeptCd(NON_MAJOR_DEPT_CD);
-        for (Subject nonMajorSubject : nonMajorSubjects) {
-            Basket basket = basketRepository.findBySubjectId(nonMajorSubject.getId()).stream().findAny()
-                .orElseThrow(() -> new AllcllException(
-                    AllcllErrorCode.BASKET_NOT_FOUND));
-            Integer totRcnt = basket.getTotRcnt();
-            nonMajorInformation.put(nonMajorSubject.getId(), totRcnt);
+        Map<Subject, Integer> nonMajorSeats = getNonMajorSeats(nonMajorSubjects);
+        List<Subject> topSubjects = getTopSubjects(nonMajorSeats);
+        topNonMajorStorage.addAll(topSubjects);
+    }
+
+    private Map<Subject, Integer> getNonMajorSeats(List<Subject> nonMajorSubjects) {
+        Map<Subject, Integer> nonMajorSeats = new HashMap<>();
+        for (Subject subject : nonMajorSubjects) {
+            Long subjectId = subject.getId();
+            Basket basket = basketRepository.findBySubjectId(subjectId).stream()
+                .findAny()
+                .orElseThrow(() -> new AllcllException(AllcllErrorCode.BASKET_NOT_FOUND));
+            Integer seatCount = basket.getTotRcnt();
+            nonMajorSeats.put(subject, seatCount);
         }
-        List<Long> keySet = new ArrayList<>(nonMajorInformation.keySet());
-        keySet.sort((o1, o2) -> nonMajorInformation.get(o2).compareTo(nonMajorInformation.get(o1)));
-        List<Long> topKeys = keySet.stream()
+        return nonMajorSeats;
+    }
+
+    private List<Subject> getTopSubjects(Map<Subject, Integer> nonMajorSeats) {
+        return nonMajorSeats.keySet().stream()
+            .sorted((o1, o2) -> nonMajorSeats.get(o2).compareTo(nonMajorSeats.get(o1)))
             .limit(SUBJECT_OFFER_COUNT)
             .toList();
-        topNonMajorStorage.addAll(topKeys);
     }
 
     public void sendToCrawlerNonMajorRequest() {
-        List<Long> topNonMajors = topNonMajorStorage.getTopNonMajors();
+        List<Subject> topNonMajors = topNonMajorStorage.getSubjects();
         ResponseEntity<String> response = crawlerClient.retrieveNonMajor(WantNonMajorRequest.from(topNonMajors));
         if (SUCCESS_MESSAGE.equals(response.getBody())) {
             log.info("교양 과목 정보를 전달 성공했습니다.");
@@ -76,45 +82,42 @@ public class CrawlerService {
     }
 
     private WantPinSubjectsRequest getPinSubjects() {
-        Map<String, SseEmitter> mapEmitters = sseEmitterStorage.getMapEmitters();
-        Set<String> tokens = mapEmitters.keySet();
-        Map<Long, Integer> pinsInformation = new HashMap<>();
-        // 활성사용자를 기반으로, 과목들의 핀이 몇개 있는지 센다.
+        List<String> tokens = sseEmitterStorage.getUserTokens();
+        Map<Subject, Integer> pinSubjects = new HashMap<>();
         for (String token : tokens) {
             List<Pin> pins = pinRepository.findAllByToken(token);
             for (Pin pin : pins) {
                 Subject subject = pin.getSubject();
-                Long subjectId = subject.getId();
-                pinsInformation.merge(subjectId, 1, Integer::sum);
+                pinSubjects.merge(subject, 1, Integer::sum);
             }
         }
-        List<WantPinSubject> wantPinSubjects = getWantPinSubjects(pinsInformation);
+        List<WantPinSubject> wantPinSubjects = getWantPinSubjects(pinSubjects);
         WantPinSubjectsRequest request = WantPinSubjectsRequest.from(wantPinSubjects);
         return request;
     }
 
-    private List<WantPinSubject> getWantPinSubjects(Map<Long, Integer> pinsInformation) {
-        List<Long> keySet = new ArrayList<>(pinsInformation.keySet());
-        keySet.sort((o1, o2) -> pinsInformation.get(o2).compareTo(pinsInformation.get(o1)));
+    private List<WantPinSubject> getWantPinSubjects(Map<Subject, Integer> pinSubjects) {
+        List<Long> subjectIds = pinSubjects.keySet().stream()
+            .sorted((o1, o2) -> pinSubjects.get(o2).compareTo(pinSubjects.get(o1)))
+            .map(Subject::getId)
+            .toList();
 
-        int mapSize = pinsInformation.size();
+        int mapSize = pinSubjects.size();
         int firstIdx = mapSize / 3;
-        int secondIdx = firstIdx + 1;
+        int secondIdx = mapSize * 2 / 3;
 
-        List<WantPinSubject> wantPinSubjects = new ArrayList<>();
+        List<WantPinSubject> firstPrioritySubject = getPrioritySubject(subjectIds.subList(0, firstIdx), 1);
+        List<WantPinSubject> secondPrioritySubject = getPrioritySubject(subjectIds.subList(firstIdx, secondIdx), 2);
+        List<WantPinSubject> thirdPrioritySubject = getPrioritySubject(subjectIds.subList(secondIdx, subjectIds.size()),
+            3);
+        firstPrioritySubject.addAll(secondPrioritySubject);
+        firstPrioritySubject.addAll(thirdPrioritySubject);
+        return firstPrioritySubject;
+    }
 
-        for (int nowIdx = 0; nowIdx < mapSize; nowIdx++) {
-            Long subjectId = keySet.get(nowIdx);
-            int priority;
-            if (nowIdx <= firstIdx) {
-                priority = 1;
-            } else if (nowIdx <= secondIdx) {
-                priority = 2;
-            } else {
-                priority = 3;
-            }
-            wantPinSubjects.add(new WantPinSubject(subjectId, priority));
-        }
-        return wantPinSubjects;
+    private List<WantPinSubject> getPrioritySubject(List<Long> subjectIds, int priority) {
+        return subjectIds.stream()
+            .map(subjectId -> new WantPinSubject(subjectId, priority))
+            .toList();
     }
 }

@@ -2,6 +2,7 @@ package kr.allcll.seatfinder.crawler;
 
 import java.util.ArrayList;
 import java.util.List;
+import kr.allcll.seatfinder.subject.Subject;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
@@ -9,13 +10,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TopNonMajorStorage {
 
-    private final List<Long> topNonMajors;
+    private final List<Subject> subjects;
 
     public TopNonMajorStorage() {
-        this.topNonMajors = new ArrayList<>();
+        this.subjects = new ArrayList<>();
     }
 
-    public void addAll(List<Long> subjectIds) {
-        this.topNonMajors.addAll(subjectIds);
+    public void addAll(List<Subject> subjects) {
+        this.subjects.addAll(subjects);
     }
 }

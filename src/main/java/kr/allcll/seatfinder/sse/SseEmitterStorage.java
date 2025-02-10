@@ -43,7 +43,7 @@ public class SseEmitterStorage {
         return emitters.values().stream().toList();
     }
 
-    public Map<String, SseEmitter> getMapEmitters() {
-        return emitters;
+    public List<String> getUserTokens() {
+        return emitters.keySet().stream().toList();
     }
 }
