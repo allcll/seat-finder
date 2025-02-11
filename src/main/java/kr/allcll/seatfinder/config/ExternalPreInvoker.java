@@ -19,43 +19,46 @@ public class ExternalPreInvoker {
     @Retryable(
         retryFor = {Exception.class},
         maxAttempts = 60 * 60 * 7,
-        backoff = @Backoff(delay = 1000)
+        backoff = @Backoff(delay = 100, multiplier = 1.5, maxDelay = 5000)
     )
     public void saveNonMajorSubjects() {
         try {
             externalService.saveNonMajorSubjects();
         } catch (Exception e) {
-            log.error("교양 top20 저장 중 오류 발생", e);
+            log.error("[서버] 상위권 교양 저장 중 오류 발생", e);
             throw e;
         }
-        log.info("교양 top20 저장 완료");
+        log.info("[서버] 상위권 교양 저장 완료");
     }
 
     @Retryable(
-        retryFor = {Exception.class},
         maxAttempts = 12 * 60 * 7,
-        backoff = @Backoff(delay = 5000)
+        backoff = @Backoff(delay = 100, multiplier = 1.5, maxDelay = 5000)
     )
-    public void retrieveSendNonMajor() {
+    public void sendSseConnectionToExternal() {
+        sendNonMajorToExternal();
         try {
-            externalService.sendToCrawlerNonMajorRequest();
+            keepSseConnection();
         } catch (Exception e) {
-            log.error("교양 top20 전달 중 오류 발생", e);
+            log.error("[외부 서버 통신] {}", e.getMessage(), e);
             throw e;
         }
-        log.info("교양 top20 전달 완료");
     }
 
-    @Retryable(
-        maxAttempts = 10 * 60 * 60 * 7,
-        backoff = @Backoff(delay = 100)
-    )
-    public void requestSseConnection() {
+    private void sendNonMajorToExternal() {
         try {
-            sseClientService.getSseData();
+            externalService.sendNonMajorToExternal();
         } catch (Exception e) {
-            log.error("SSE: {}", e.getMessage(), e);
+            log.error("[외부 서버 통신] 상위권 교양 전달 중 오류 발생", e);
             throw e;
+        }
+        log.info("[외부 서버 통신] 상위권 교양 전달 완료");
+    }
+
+    private void keepSseConnection() {
+        while (true) {
+            log.info("[외부 서버 통신] SSE 연결 시도");
+            sseClientService.getSseData();
         }
     }
 }

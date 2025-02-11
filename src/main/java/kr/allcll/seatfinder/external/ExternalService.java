@@ -64,7 +64,7 @@ public class ExternalService {
             .toList();
     }
 
-    public void sendToCrawlerNonMajorRequest() {
+    public void sendNonMajorToExternal() {
         List<Subject> topNonMajors = topNonMajorStorage.getSubjects();
         externalClient.sendNonMajor(NonMajorRequest.from(topNonMajors));
     }

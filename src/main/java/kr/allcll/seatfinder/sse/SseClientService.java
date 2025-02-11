@@ -57,7 +57,6 @@ public class SseClientService {
                 }
             }
             reader.close();
-            throw new RuntimeException("SSE 연결이 종료되었습니다.");
         } catch (Exception e) {
             throw new RuntimeException("SSE 연결 중 오류 발생", e);
         }

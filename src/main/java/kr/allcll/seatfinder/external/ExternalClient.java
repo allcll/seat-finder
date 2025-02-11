@@ -24,13 +24,12 @@ public class ExternalClient {
 
     public void sendNonMajor(NonMajorRequest request) {
         String payload = toJson(request);
-        ResponseEntity<String> response = restClient.put()
+        restClient.put()
             .uri(externalProperties.host() + externalProperties.nonMajorPath())
             .contentType(MediaType.APPLICATION_JSON)
             .body(payload)
             .retrieve()
             .toEntity(String.class);
-        log.info("교양 top20 전달 완료: {}", response.getBody());
     }
 
     public void sendPinSubjects(PinSubjectsRequest request) {
