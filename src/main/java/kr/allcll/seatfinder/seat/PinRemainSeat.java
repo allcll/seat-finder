@@ -1,10 +1,12 @@
 package kr.allcll.seatfinder.seat;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Getter
-public class PinRemainSeat {
+public record PinRemainSeat(
+    @JsonProperty("subjectId") Long subjectId,
+    @JsonProperty("totalSeat") int totalSeat,
+    @JsonProperty("remainSeat") int remainSeat,
+    @JsonProperty("takenSeat") int takenSeat
+) {
 
-    private Long subjectId;
-    private int remainSeats;
 }

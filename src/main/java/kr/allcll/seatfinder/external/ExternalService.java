@@ -1,8 +1,10 @@
 package kr.allcll.seatfinder.external;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import kr.allcll.seatfinder.basket.Basket;
 import kr.allcll.seatfinder.basket.BasketRepository;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
@@ -17,7 +19,6 @@ import kr.allcll.seatfinder.subject.Subject;
 import kr.allcll.seatfinder.subject.SubjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -68,11 +69,11 @@ public class ExternalService {
         externalClient.sendNonMajor(NonMajorRequest.from(topNonMajors));
     }
 
-    @Scheduled(fixedDelay = 1000 * 60)
-    public void sendWantPinSubjectIdsToCrawler() {
-        PinSubjectsRequest request = getPinSubjects();
-        externalClient.sendPinSubjects(request);
-    }
+//    @Scheduled(fixedDelay = 1000 * 60)
+//    public void sendWantPinSubjectIdsToCrawler() {
+//        PinSubjectsRequest request = getPinSubjects();
+//        externalClient.sendPinSubjects(request);
+//    }
 
     private PinSubjectsRequest getPinSubjects() {
         List<String> tokens = sseEmitterStorage.getUserTokens();
@@ -110,6 +111,6 @@ public class ExternalService {
     private List<PinSubject> getPrioritySubject(List<Long> subjectIds, int priority) {
         return subjectIds.stream()
             .map(subjectId -> new PinSubject(subjectId, priority))
-            .toList();
+            .collect(Collectors.toCollection(ArrayList::new));
     }
 }

@@ -1,6 +1,5 @@
 package kr.allcll.seatfinder.sse;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -8,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.List;
 import kr.allcll.seatfinder.exception.AllcllErrorCode;
 import kr.allcll.seatfinder.exception.AllcllException;
 import kr.allcll.seatfinder.external.ExternalProperties;
@@ -28,30 +26,40 @@ import org.springframework.stereotype.Service;
 @EnableConfigurationProperties(ExternalProperties.class)
 public class SseClientService {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     private final SeatStorage seatStorage;
     private final SubjectRepository subjectRepository;
     private final ExternalProperties externalProperties;
 
     public void getSseData() {
         try {
-            String host = externalProperties.host() + externalProperties.connectionPath();
+            String host = externalProperties.host() + externalProperties.connectionPath() + "?userId=1";
             HttpURLConnection connection = getConnection(host);
-
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                List<PinRemainSeat> pinRemainSeats = parseJson(line);
-                for (PinRemainSeat pinRemainSeat : pinRemainSeats) {
-                    Subject subject = subjectRepository.findById(pinRemainSeat.getSubjectId())
-                        .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
-                    seatStorage.add(new Seat(subject, pinRemainSeat.getRemainSeats(), LocalDateTime.now()));
+                if (line.startsWith("data:")) {
+                    String dataPart = line.substring("data:".length()).trim();
+                    if (dataPart.startsWith("{")) {
+                        PinRemainSeat pinRemainSeat = null;
+                        try {
+                            pinRemainSeat = objectMapper.readValue(dataPart, PinRemainSeat.class);
+                        } catch (Exception e) {
+                            log.error("JSON 파싱 실패: {}", dataPart, e);
+                        }
+                        Subject subject = subjectRepository.findById(pinRemainSeat.subjectId())
+                            .orElseThrow(() -> new AllcllException(AllcllErrorCode.SUBJECT_NOT_FOUND));
+                        seatStorage.add(new Seat(subject, pinRemainSeat.remainSeat(), LocalDateTime.now()));
+                    } else {
+                        log.debug("JSON 형식이 아닌 data 값: {}", dataPart);
+                    }
                 }
             }
             reader.close();
-            throw new RuntimeException("SSE connection closed");
+            throw new RuntimeException("SSE 연결이 종료되었습니다.");
         } catch (Exception e) {
-            throw new RuntimeException("SSE connection error", e);
+            throw new RuntimeException("SSE 연결 중 오류 발생", e);
         }
     }
 
@@ -62,10 +70,5 @@ public class SseClientService {
         connection.setRequestProperty("Accept", "text/event-stream");
         connection.setDoOutput(true);
         return connection;
-    }
-
-    private List<PinRemainSeat> parseJson(String json) throws Exception {
-        return objectMapper.readValue(json, new TypeReference<>() {
-        });
     }
 }
