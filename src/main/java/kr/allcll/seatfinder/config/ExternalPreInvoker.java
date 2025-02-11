@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -60,5 +61,16 @@ public class ExternalPreInvoker {
             log.info("[외부 서버 통신] SSE 연결 시도");
             sseClientService.getSseData();
         }
+    }
+
+    @Scheduled(fixedDelay = 1000 * 60 * 5)
+    void sendPinnedSubjectsToExternal() {
+        try {
+            externalService.sendWantPinSubjectIdsToCrawler();
+        } catch (Exception e) {
+            log.error("[외부 서버 통신] 핀 과목 전달 중 오류 발생", e);
+            throw e;
+        }
+        log.info("[외부 서버 통신] 핀 과목 전달 완료");
     }
 }

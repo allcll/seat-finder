@@ -69,11 +69,10 @@ public class ExternalService {
         externalClient.sendNonMajor(NonMajorRequest.from(topNonMajors));
     }
 
-//    @Scheduled(fixedDelay = 1000 * 60)
-//    public void sendWantPinSubjectIdsToCrawler() {
-//        PinSubjectsRequest request = getPinSubjects();
-//        externalClient.sendPinSubjects(request);
-//    }
+    public void sendWantPinSubjectIdsToCrawler() {
+        PinSubjectsRequest request = getPinSubjects();
+        externalClient.sendPinSubjects(request);
+    }
 
     private PinSubjectsRequest getPinSubjects() {
         List<String> tokens = sseEmitterStorage.getUserTokens();
@@ -86,8 +85,7 @@ public class ExternalService {
             }
         }
         List<PinSubject> wantPinSubjects = getWantPinSubjects(pinSubjects);
-        PinSubjectsRequest request = PinSubjectsRequest.from(wantPinSubjects);
-        return request;
+        return PinSubjectsRequest.from(wantPinSubjects);
     }
 
     private List<PinSubject> getWantPinSubjects(Map<Subject, Integer> pinSubjects) {
