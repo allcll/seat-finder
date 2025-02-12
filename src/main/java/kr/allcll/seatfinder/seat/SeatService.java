@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class SeatService {
 
     private static final String NON_MAJOR_SEATS_EVENT_NAME = "nonMajorSeats";
-    private static final int NON_MAJOR_SUBJECT_QUERY_LIMIT = 10;
+    private static final int NON_MAJOR_SUBJECT_QUERY_LIMIT = 20;
     private static final String PIN_EVENT_NAME = "pinSeats";
     private static final int TASK_DURATION = 1000;
     private static final int TASK_PERIOD = 10000;
