@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -34,13 +33,12 @@ public class ExternalClient {
 
     public void sendPinSubjects(PinSubjectsRequest request) {
         String payload = toJson(request);
-        ResponseEntity<String> response = restClient.put()
+        restClient.put()
             .uri(externalProperties.host() + externalProperties.pinPath())
             .contentType(MediaType.APPLICATION_JSON)
             .body(payload)
             .retrieve()
             .toEntity(String.class);
-        log.info("핀 과목 전달 완료: {}", response.getBody());
     }
 
     private String toJson(Object object) {

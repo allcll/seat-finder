@@ -60,6 +60,7 @@ public class ExternalPreInvoker {
         while (true) {
             log.info("[외부 서버 통신] SSE 연결 시도");
             sseClientService.getSseData();
+            log.info("[외부 서버 통신] SSE 연결 종료");
         }
     }
 
