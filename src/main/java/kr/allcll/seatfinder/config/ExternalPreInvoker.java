@@ -64,7 +64,7 @@ public class ExternalPreInvoker {
         }
     }
 
-    @Scheduled(fixedDelay = 1000 * 60 * 5)
+    @Scheduled(fixedDelay = 1000 * 10)
     void sendPinnedSubjectsToExternal() {
         try {
             externalService.sendWantPinSubjectIdsToCrawler();

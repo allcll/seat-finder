@@ -11,10 +11,12 @@ import kr.allcll.seatfinder.seat.dto.SeatsResponse;
 import kr.allcll.seatfinder.sse.SseService;
 import kr.allcll.seatfinder.subject.Subject;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SeatService {
@@ -23,7 +25,7 @@ public class SeatService {
     private static final int NON_MAJOR_SUBJECT_QUERY_LIMIT = 20;
     private static final String PIN_EVENT_NAME = "pinSeats";
     private static final int TASK_DURATION = 1000;
-    private static final int TASK_PERIOD = 10000;
+    private static final int TASK_PERIOD = 60000;
 
     private final SseService sseService;
     private final SeatStorage seatStorage;
@@ -38,15 +40,26 @@ public class SeatService {
 
     public void sendPinSeatsInformation(String token) {
         Runnable task = () -> {
+            long start = System.currentTimeMillis();
             List<Pin> pins = pinRepository.findAllByToken(token);
+            log.info("token: {}ms - {}: 핀 조회 결과 {}개 조회", System.currentTimeMillis() - start, token, pins.size());
+            start = System.currentTimeMillis();
             List<Subject> subjects = pins.stream()
                 .map(Pin::getSubject)
                 .toList();
+            log.info("token: {}ms - {}: 과목 조회 결과 {}개 조회", System.currentTimeMillis() - start, token, subjects.size());
+            start = System.currentTimeMillis();
             List<Seat> pinSeats = seatStorage.getSeats(subjects);
+            log.info("token: {}ms - {}: 여셕 조회 결과 {}개 조회", System.currentTimeMillis() - start, token, pinSeats.size());
+            start = System.currentTimeMillis();
             sseService.propagate(PIN_EVENT_NAME, PinSeatsResponse.from(pinSeats));
+            log.info("token: {}ms - {}: SSE 전송 완료", System.currentTimeMillis() - start, token);
         };
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(task, Duration.ofMillis(TASK_DURATION));
-        scheduler.schedule(() -> scheduledFuture.cancel(true),
+        scheduler.schedule(() -> {
+                log.info("token: {}: 태스크 종료", token);
+                scheduledFuture.cancel(true);
+            },
             new Date(System.currentTimeMillis() + TASK_PERIOD));
     }
 }
